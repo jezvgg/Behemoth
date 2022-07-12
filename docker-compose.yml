@@ -1,0 +1,9 @@
+version: '3'
+
+services:
+  flask:
+    build:
+      context: .
+      dockerfile: ./docker/Dockerfile
+    ports:
+      - "7007:7007"
