@@ -3,6 +3,7 @@ from time import perf_counter
 from math import prod
 from itertools import combinations
 
+
 typesTitles = {'political': 'Политические предпочтения', 'people_main': 'Главное в людях',
                'life_main': 'Главное в жизни', 'sub': 'Главные интересы по подпискам',
                'alcohol': 'Отношение к алкоголю', 'smoking': 'Отношение к курению'}

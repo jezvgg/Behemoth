@@ -1,4 +1,0 @@
-uvicorn==0.13.3
-vk
-pandas
-flask
