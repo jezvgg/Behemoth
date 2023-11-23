@@ -1,6 +1,6 @@
 from flask import Flask, request, jsonify
-from parsing import parsing
-from vizualazing import analyze, createDictionaryOfBarChart, createChoicesOfDataFrame, createDictionaryOfVenna
+from backend.parsing import parsing
+from backend.vizualazing import analyze, createDictionaryOfBarChart, createChoicesOfDataFrame, createDictionaryOfVenna
 
 
 app = Flask(__name__)
