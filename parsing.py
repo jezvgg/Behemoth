@@ -1,10 +1,14 @@
 import vk
 import csv
+import pandas as pd
 from time import sleep
 from datetime import datetime
 
 
 def interests(id_members):
+    '''
+    Временно не используются почему-то
+    '''
     result = []
     info = vk_api.users.get(user_ids=",".join(map(str, id_members)), fields="interests")
     for i in range(len(info)):
@@ -13,7 +17,23 @@ def interests(id_members):
     return result
 
 
+def clean_types(types: list[str]) -> list[str]:
+    '''
+    Чисти типы группы
+    '''
+    types = list(set(types))
+    new_types = []
+    for type in types:
+        if 'Этот материал заблокирован' not in type or type[0].isnumeric():
+            continue
+        new_types.append(type)
+    return new_types
+
+
 def activities(id_members):
+    '''
+    Времено не используются почему-то
+    '''
     result = []
     info = vk_api.users.get(user_ids=",".join(map(str, id_members)), fields="activities")
     for i in range(len(info)):
@@ -31,9 +51,14 @@ def groups(id_members):
     for member in id_members:
         if member['is_closed'] or 'deactivated' in member: continue
         id = member['id']
-        groups = vk_api.groups.get(user_id=str(id))['items'][:500]
 
-        info_of_groups = vk_api.groups.getById(group_ids=groups, fields='activity')
+        try:
+            groups = vk_api.groups.get(user_id=str(id))['items'][:500]
+            info_of_groups = vk_api.groups.getById(group_ids=groups, fields='activity')
+        except vk.exceptions.VkAPIError:
+            sleep(0.5)
+            groups = vk_api.groups.get(user_id=str(id))['items'][:500]
+            info_of_groups = vk_api.groups.getById(group_ids=groups, fields='activity')
 
         activity_of_member = {}
         for group in info_of_groups['groups']:
@@ -47,28 +72,35 @@ def groups(id_members):
             activity_of_member[group['activity']] += 1
 
         # Возможно можно не делать id как str
-        info[str(id)]=activity_of_member
-    return info, list(set(types))
+        info[id]=activity_of_member
+    return info, clean_types(types)
 
 
 def users(id_members):
+    '''
+    Вроде тоже верно
+    '''
     sex = {}
     bdate = {}
     personal = {}
-    info = vk_api.users.get(user_ids=",".join(map(str, id_members)), fields="sex, bdate, personal")
-    for i in range(len(info)):
-        if 'sex' in info[i]:
-             sex[str(id_members[i])]=info[i]['sex'] #1 - ж 2 - м 0 - н
+    info = vk_api.users.get(user_ids=id_members, fields="sex, bdate, personal")
+    for i,member_info in enumerate(info):
+
+        if 'sex' in member_info:
+             sex[str(id_members[i])]=member_info['sex'] #1 - ж 2 - м 0 - н
         else:
             sex[str(id_members[i])]="0"
-        if 'bdate' in info[i]:
-            bdate[str(id_members[i])]=info[i]['bdate'] #D.M.YYYY or D.M(secret)
+
+        if 'bdate' in member_info:
+            bdate[str(id_members[i])]=member_info['bdate'] #D.M.YYYY or D.M(secret)
         else:
             bdate[str(id_members[i])]="0"
-        if 'personal' in info[i]:
-            personal[str(id_members[i])]=info[i]['personal']
+
+        if 'personal' in member_info:
+            personal[str(id_members[i])]=member_info['personal']
         else:
             personal[str(id_members[i])]="0"
+
     return sex, bdate, personal
 
 
@@ -79,16 +111,14 @@ def parsing(token, group_id):
     vk_api = vk.session.API(access_token=token, v='5.199')
 
 
-    # Список учатников группы
+    # Получаем интересы участников группы
     members = vk_api.groups.getMembers(group_id=group_id, fields='status')
-    # Айди участников группы
-    id_members = members['items']
-    groups_info = groups(id_members)
+    groups_counts, groups_types = groups(members['items'])
 
-    groups_counts, groups_types = groups_info[0], groups_info[1]
-    users_info = users(id_members)
+    # Получаем общую информацию по участникам группы
+    id_members = vk_api.groups.getMembers(group_id=group_id)['items']
+    users_sex, users_bdate, users_personal = users(id_members)
 
-    users_sex, users_bdate, users_personal = users_info[0], users_info[1], users_info[2]
     csv_table_personal = ["political", "religion", "inspired_by", "people_main", "life_main", "smoking", "alcohol"]
     csv_table = ["id", "sex", "bdate", "political", "religion", "inspired_by", "people_main", "life_main", "smoking", "alcohol"] + list(map(str, groups_types))
 
@@ -119,5 +149,5 @@ def parsing(token, group_id):
 
 
 if __name__ == "__main__":
-    parsing(token="vk1.a.aF7jMwGP58s_y6kdrHZRFKyHBvvVUQ5N-BoS8rfLErNOzSVmzo-e2erLBCSBE1KOJndxmGSH_6zmqicottD3etowGKBZWOza1eml49MKifoeiZEQ-6sZhE9qNxH-ywBTgXfJYf9_QBbnReyg",
+    parsing(token="vk1.a.NC8Ti_ySNNUDCbi3TyhB8ooRNZ73PrXCbOZJYfQgcajrZ9I8iIVrFX-fpZfqOaxyTm7zigtQuFDWnEPpjWeFLaX2PgWS2kqx3kcWPm4z1Neq5Ga0wr2XovmTf2JG1-kgrefzv93bqfFfod9yDqN5JawOtD0yGoPqt1rciWNn0fEsbgPrNv3CraGvs2eUBC4Px6Uqhrj5g_aDlOfk9xAGiQ",
     group_id="warningbuffet")

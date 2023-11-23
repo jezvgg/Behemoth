@@ -52,8 +52,8 @@ def DataFrameConvertBool(df):  # Делает значения у колонок
 
 def getSeriesfromList(df, columns):  # Возращает Series в списке по списку колонок (нужно для prod)
     result = []
-    for i in range(len(columns)):
-        result.append(df[columns[i]])
+    for column in columns:
+        result.append(df[column])
     return result
 
 
@@ -94,6 +94,9 @@ def createDictionaryOfBarChart(df, types):  # Делает словарь кот
 
 # {'choice':{'political':[types]}}
 def createChoicesOfDataFrame(df, vibor):  # Оставляет в датафреме только нужные строки
+    '''
+    Переделать
+    '''
     choice = vibor['choice']
     filter = df.head(0).copy()
     for key in choice.keys():
