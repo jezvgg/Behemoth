@@ -29,24 +29,12 @@ tips = {'political': ["p - коммунистические", "p - социал�
         'sex': ["s - муж", "s - жен"]}
 
 
-def cleanDataFrame(df):  # Очищает датафрем от лишних колонок (подписок) вроде 28 августа встреча или Этот метриал запрещён
-    dropedColumns = []
-    for columns in df.columns.tolist():
-        if columns[0].isdigit() or columns[0:4] == 'Этот':
-            dropedColumns.append(columns)
-    df = df.drop(columns=dropedColumns)
-    return df
-
-
-def isBool(input):  # Возращает True если больше 0 и False иначе
-    if int(input) > 0:
-        return True
-    return False
-
-
-def DataFrameConvertBool(df):  # Делает значения у колонок подписок булевыми
-    for columns in df.columns.tolist()[10:]:
-        df[columns] = df[columns].apply(isBool)
+def DataFrameConvertBool(df):
+    '''
+    Делает булевыми значения
+    '''
+    for columns in df.columns[10:]:
+        df[columns] = df[columns].apply(lambda x: int(x)>0)
     return df
 
 
@@ -111,6 +99,8 @@ def analyze(): # Создаёт датафрейм из CSV
     raw_df = pd.read_csv(filename)
     pd.set_option('display.max.columns', None)
     df = raw_df.fillna(0)
-    df = cleanDataFrame(df)
     print('Done for', perf_counter() - startTime)
     return df
+
+if __name__ == "__main__":
+    pass
