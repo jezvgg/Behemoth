@@ -17,19 +17,6 @@ def interests(id_members):
     return result
 
 
-def clean_types(types: list[str]) -> list[str]:
-    '''
-    Чисти типы группы
-    '''
-    types = list(set(types))
-    new_types = []
-    for type in types:
-        if 'Этот материал заблокирован' not in type or type[0].isnumeric():
-            continue
-        new_types.append(type)
-    return new_types
-
-
 def activities(id_members):
     '''
     Времено не используются почему-то
@@ -53,16 +40,14 @@ def groups(id_members):
         id = member['id']
 
         try:
-            groups = vk_api.groups.get(user_id=str(id))['items'][:500]
-            info_of_groups = vk_api.groups.getById(group_ids=groups, fields='activity')
+            info_of_groups = vk_api.groups.get(user_id=str(id),extended=1,fields='activity')['items'][:500]
         except vk.exceptions.VkAPIError:
             sleep(0.5)
-            groups = vk_api.groups.get(user_id=str(id))['items'][:500]
-            info_of_groups = vk_api.groups.getById(group_ids=groups, fields='activity')
+            info_of_groups = vk_api.groups.get(user_id=str(id),extended=1,fields='activity')['items'][:500]
 
         activity_of_member = {}
-        for group in info_of_groups['groups']:
-            if 'activity' not in group: continue
+        for group in info_of_groups:
+            if 'activity' not in group or 'Этот' in group['activity'] or group['activity'][0].isnumeric(): continue
             types.append(group['activity'])
 
             if group['activity'] not in activity_of_member:
@@ -73,7 +58,7 @@ def groups(id_members):
 
         # Возможно можно не делать id как str
         info[id]=activity_of_member
-    return info, clean_types(types)
+    return info, list(set(types))
 
 
 def users(id_members):
@@ -87,19 +72,19 @@ def users(id_members):
     for i,member_info in enumerate(info):
 
         if 'sex' in member_info:
-             sex[str(id_members[i])]=member_info['sex'] #1 - ж 2 - м 0 - н
+             sex[id_members[i]]=member_info['sex'] #1 - ж 2 - м 0 - н
         else:
-            sex[str(id_members[i])]="0"
+            sex[id_members[i]]="0"
 
         if 'bdate' in member_info:
-            bdate[str(id_members[i])]=member_info['bdate'] #D.M.YYYY or D.M(secret)
+            bdate[id_members[i]]=member_info['bdate'] #D.M.YYYY or D.M(secret)
         else:
-            bdate[str(id_members[i])]="0"
+            bdate[id_members[i]]="0"
 
         if 'personal' in member_info:
-            personal[str(id_members[i])]=member_info['personal']
+            personal[id_members[i]]=member_info['personal']
         else:
-            personal[str(id_members[i])]="0"
+            personal[id_members[i]]="0"
 
     return sex, bdate, personal
 
@@ -112,42 +97,47 @@ def parsing(token, group_id):
 
 
     # Получаем интересы участников группы
+    start_time = datetime.now()
     members = vk_api.groups.getMembers(group_id=group_id, fields='status')
     groups_counts, groups_types = groups(members['items'])
+    print("Groups done for: ", datetime.now()-start_time)
 
     # Получаем общую информацию по участникам группы
+    start_time = datetime.now()
     id_members = vk_api.groups.getMembers(group_id=group_id)['items']
     users_sex, users_bdate, users_personal = users(id_members)
+    print("Users done for: ", datetime.now()-start_time)
 
+    start_time = datetime.now()
     csv_table_personal = ["political", "religion", "inspired_by", "people_main", "life_main", "smoking", "alcohol"]
-    csv_table = ["id", "sex", "bdate", "political", "religion", "inspired_by", "people_main", "life_main", "smoking", "alcohol"] + list(map(str, groups_types))
+    csv_table = ["id", "sex", "bdate", "political", "religion", "inspired_by", "people_main", "life_main", "smoking", "alcohol"] + groups_types
 
     with open("content.csv", mode="w", encoding="utf-8") as w_file:
         file_write = csv.writer(w_file, delimiter = ",")
         file_write.writerow(csv_table)
-        for j in range(len(id_members)):
+        for id in id_members:
             csv_result = []
-            csv_result.append(id_members[j])
-            csv_result.append(users_sex[str(id_members[j])])
-            csv_result.append(users_bdate[str(id_members[j])])
+            csv_result.append(id)
+            csv_result.append(users_sex[id])
+            csv_result.append(users_bdate[id])
 
-            for i in range(len(csv_table_personal)):
-                if csv_table[i+3] not in users_personal[str(id_members[j])]:
+            for i,persona in enumerate(csv_table_personal):
+                if csv_table[i+3] not in users_personal[id]:
                     csv_result.append(0)
                     continue
+                csv_result.append(users_personal[id][persona])
 
-                csv_result.append(users_personal[str(id_members[j])][csv_table_personal[i]])
-
-            for i in range(len(csv_table)-10):
-                if str(id_members[j]) not in  groups_counts or csv_table[i+10] not in groups_counts[str(id_members[j])]:
+            for i,type_ in enumerate(csv_table[10:]):
+                if id not in  groups_counts or type_ not in groups_counts[id]:
                     csv_result.append(0)
                     continue
-
-                csv_result.append(groups_counts[str(id_members[j])][csv_table[i+10]])
+                csv_result.append(groups_counts[id][type_])
 
             file_write.writerow(csv_result)
+    
+    print("CSV done for: ",datetime.now()-start_time)
 
 
 if __name__ == "__main__":
-    parsing(token="vk1.a.NC8Ti_ySNNUDCbi3TyhB8ooRNZ73PrXCbOZJYfQgcajrZ9I8iIVrFX-fpZfqOaxyTm7zigtQuFDWnEPpjWeFLaX2PgWS2kqx3kcWPm4z1Neq5Ga0wr2XovmTf2JG1-kgrefzv93bqfFfod9yDqN5JawOtD0yGoPqt1rciWNn0fEsbgPrNv3CraGvs2eUBC4Px6Uqhrj5g_aDlOfk9xAGiQ",
+    parsing(token="vk1.a.pg91yFJ9SEV4fRy1PIPgVSoHxFXPnRaIgUuKRrUtjmU8RjoiB1tUyrHRbGv3QRuLq3B6zn5hIZkwI_k5SpZPlqEHTLeZZUsTGL0OdWa0QJq_P3kGR_IMwcGBl1XlF5ugvQyBHymUKP6cbOYtiW5UKvyT2LJ0HOmQC0pSBeBizvp4hke81B80ggSSJZiRdpO61mVFxabhMuofaYChu9kJkg",
     group_id="warningbuffet")
