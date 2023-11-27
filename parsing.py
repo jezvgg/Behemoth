@@ -139,5 +139,5 @@ def parsing(token, group_id):
 
 
 if __name__ == "__main__":
-    parsing(token="vk1.a.pg91yFJ9SEV4fRy1PIPgVSoHxFXPnRaIgUuKRrUtjmU8RjoiB1tUyrHRbGv3QRuLq3B6zn5hIZkwI_k5SpZPlqEHTLeZZUsTGL0OdWa0QJq_P3kGR_IMwcGBl1XlF5ugvQyBHymUKP6cbOYtiW5UKvyT2LJ0HOmQC0pSBeBizvp4hke81B80ggSSJZiRdpO61mVFxabhMuofaYChu9kJkg",
+    parsing(token="vk1.a.BwJ9mLBfhD_Jy8YqbcNMxZvK7UFYlkgmIVqiBwdL3AfS-nJOg6GEb4jOyvnnR3tztBf0GESmGe3YyU_B8VBKoJ7y_5fgTarIvyBYGFbiguO88ztzt1N-EsihfeQtg1JnhHb-Y3R00dB7-oqZ4gT6ZCPFx5R4WL53h-Ysxcj1TcRnukYHEoKgt5h8s6R3q_Cjuu1A9R-wYCiQvyf5YRsWIQ",
     group_id="warningbuffet")
