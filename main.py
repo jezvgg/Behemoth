@@ -1,8 +1,11 @@
 import flet as ft
+from flet.plotly_chart import PlotlyChart
+import plotly.express as px
 from settings_checkers import p_checkers, pm_checkers
+from vizualazing import analyze, createDictionaryOfBarChart
 
 def main(page: ft.Page):
-    MAIN_COLOR = "#364156"
+    MAIN_COLOR = "#3366CC"
     BG_COLOR = "#11151C"
     SECONARY_BG_COLOR = "#1A202A"
     SECONARY_COLOR = "#212D40"
@@ -14,11 +17,13 @@ def main(page: ft.Page):
                        title=ft.Text(value="Behemoth", size=36, weight=ft.FontWeight.W_600))
     page.appbar = header
     page.update()
+
+    data = analyze()
     
     content = ft.GridView(
         expand=1,
         spacing=5,
-        max_extent=400
+        max_extent=1200
     )
 
     page.add(content)
@@ -94,11 +99,16 @@ def main(page: ft.Page):
         open_settings(e)
 
         content.controls.append(content.controls[-1])
+
+        bar_data = createDictionaryOfBarChart(data, 'political')
         
+        px.bar(bar_data['data'], x=bar_data['xAxis'], y=bar_data["yAxis"], color_discrete_sequence=[MAIN_COLOR], template='plotly_dark').show()
+
         content.controls[-2] = (
             ft.Container(
-                width=400,
-                height=400,
+                content = PlotlyChart(px.bar(bar_data['data'], x=bar_data['xAxis'], y=bar_data["yAxis"], color_discrete_sequence=[MAIN_COLOR], template='plotly_dark')),
+                width=600,
+                height=600,
                 border_radius=20,
                 border=ft.border.all(2, SECONARY_BG_COLOR)
             )
@@ -108,8 +118,8 @@ def main(page: ft.Page):
     content.controls.append(
         ft.Container(
             content=ft.FloatingActionButton(icon=ft.icons.ADD, on_click=add_card, bgcolor=BG_COLOR),
-            width=400,
-            height=400,
+            width=600,
+            height=600,
             border_radius=20,
             border=ft.border.all(2, SECONARY_BG_COLOR)
         )

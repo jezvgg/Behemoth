@@ -66,18 +66,14 @@ def createDictionaryOfVenna(df, columns):  # Делает словарь кот�
     return Venna
 
 
-def createDictionaryOfBarChart(df, types):  # Делает словарь который отправляют клиенту для столбчатого графика(ов)
-    BarCharts = []
-    for i in range(len(types)):
-        barchart = {}
-        barchart['id'] = i
-        barchart['title'] = typesTitles[types[i]]
-        barchart['x'] = [tips[types[i]][type-1] for type in df[types[i]].unique()[1:]]
-        barchart['y'] = df[types[i]].value_counts().tolist()[1:]
-        barchart['xAxis'] = 'Предпочтения'
-        barchart['yAxis'] = 'Кол-во людей (не в процентах)'
-        BarCharts.append(barchart)
-    return {'barcharts': BarCharts}
+def createDictionaryOfBarChart(df, type):  # Делает словарь который отправляют клиенту для столбчатого графика(ов)
+    barchart = {}
+    barchart['title'] = typesTitles[type]
+    barchart['data'] = pd.DataFrame({'Предпочтения':[tips[type][type_-1] for type_ in df[type].unique()[1:]],
+    'Кол-во людей (не в процентах)':df[type].value_counts().tolist()[1:]})
+    barchart['xAxis'] = 'Предпочтения'
+    barchart['yAxis'] = 'Кол-во людей (не в процентах)'
+    return barchart
 
 
 # {'choice':{'political':[types]}}
