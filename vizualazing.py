@@ -1,31 +1,31 @@
 import pandas as pd
-from time import perf_counter
 from math import prod
 from itertools import combinations
+import flet as ft
 
 
 typesTitles = {'political': 'Политические предпочтения', 'people_main': 'Главное в людях',
                'life_main': 'Главное в жизни', 'sub': 'Главные интересы по подпискам',
                'alcohol': 'Отношение к алкоголю', 'smoking': 'Отношение к курению'}
-tips = {'political': ["p - коммунистические", "p - социалистические", "p - умеренные", "p - либеральные",
-                      "p - консервативные", "p - монархические", "p - ультраконсервативные", "p - индифферентные",
-                      "p - либертарианские"],
+tips = {'political': ["коммунистические", "социалистические", "умеренные", "либеральные",
+                      "консервативные", "монархические", "ультраконсервативные", "индифферентные",
+                      "либертарианские"],
         'people_main': [
-            "m - ум и креативность",
-            "m - доброта и честность",
-            "m - красота и здоровье",
-            "m - власть и богатство",
-            "m - смелость и упорство",
-            "m - юмор и жизнелюбие"],
+            "ум и креативность",
+            "доброта и честность",
+            "красота и здоровье",
+            "власть и богатство",
+            "смелость и упорство",
+            "юмор и жизнелюбие"],
         'life_main': [
-            "l - семья и дети",
-            "l - карьера и деньги",
-            "l - развлечения и отдых",
-            "l - наука и исследования",
-            "l - совершенствование мира",
-            "l - саморазвитие",
-            "l - красота и искусство",
-            "l - слава и влияние"],
+            "семья и дети",
+            "карьера и деньги",
+            "развлечения и отдых",
+            "наука и исследования",
+            "совершенствование мира",
+            "саморазвитие",
+            "красота и искусство",
+            "слава и влияние"],
         'sex': ["s - муж", "s - жен"]}
 
 
@@ -66,37 +66,66 @@ def createDictionaryOfVenna(df, columns):  # Делает словарь кот�
     return Venna
 
 
-def createDictionaryOfBarChart(df, type):  # Делает словарь который отправляют клиенту для столбчатого графика(ов)
-    barchart = {}
-    barchart['title'] = typesTitles[type]
-    barchart['data'] = pd.DataFrame({'Предпочтения':[tips[type][type_-1] for type_ in df[type].unique()[1:]],
-    'Кол-во людей (не в процентах)':df[type].value_counts().tolist()[1:]})
-    barchart['xAxis'] = 'Предпочтения'
-    barchart['yAxis'] = 'Кол-во людей (не в процентах)'
+def createBarChart(df, type) -> ft.BarChart:  # Делает словарь который отправляют клиенту для столбчатого графика(ов)
+
+    def hover(e: ft.BarChartEvent):
+        for group_index, group in enumerate(barchart.bar_groups):
+            for rod_index, rod in enumerate(group.bar_rods):
+                if e.group_index == group_index and e.rod_index == rod_index:
+                    rod.color = "#D66853"
+                else:
+                    rod.color = "#3366CC"
+        barchart.update()
+
+    barchart = ft.BarChart(tooltip_bgcolor="#11151C", 
+    max_y=max(df[type].value_counts().tolist()[1:])+max(df[type].value_counts().tolist()[1:])//5,
+    on_chart_event=hover)
+
+    print(df[type].value_counts())
+    axis = dict(df[type].value_counts())
+    if 0 in axis.keys():
+        del axis[0]
+    AxisX = [tips[type][name-1] for name in axis.keys()]
+    AxisY = list(axis.values())
+    for i, value in enumerate(zip(AxisX,AxisY)):
+        barchart.bar_groups.append(
+            ft.BarChartGroup(
+                x=i,
+                bar_rods=[
+                    ft.BarChartRod(
+                        from_y=0,
+                        to_y=value[1],
+                        width=35,
+                        color="#3366CC",
+                        tooltip=f'{value[0]} \n{value[1]}',
+                        border_radius=5
+                    )
+                ]
+            )
+        )
     return barchart
 
 
-# {'choice':{'political':[types]}}
-def createChoicesOfDataFrame(df, vibor):  # Оставляет в датафреме только нужные строки
+def createChoicesOfDataFrame(df, choice: dict[str, list[int]]) -> pd.DataFrame:  # Оставляет в датафреме только нужные строки
     '''
     Переделать
     '''
-    choice = vibor['choice']
-    filter = df.head(0).copy()
+    filter = []
     for key in choice.keys():
-        for j in range(len(choice[key])):
-            filter = filter.append(filter[filter[key] == choice[key][j]], ignore_index=True)
-    return filter
+        for value in choice[key]:
+            filter.append(f"(df['{key}']=={value})")
+    print("|".join(filter))
+    result = df[eval("|".join(filter))].copy()
+    return result
 
 
 def analyze(): # Создаёт датафрейм из CSV
-    startTime = perf_counter()
     filename = 'content.csv'
     raw_df = pd.read_csv(filename)
     pd.set_option('display.max.columns', None)
     df = raw_df.fillna(0)
-    print('Done for', perf_counter() - startTime)
     return df
 
 if __name__ == "__main__":
-    pass
+    data = analyze()
+    print(createChoicesOfDataFrame(data, {'political':[1,2,3,4,5,6,6]}))

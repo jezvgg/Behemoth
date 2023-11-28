@@ -1,8 +1,8 @@
 import flet as ft
 from flet.plotly_chart import PlotlyChart
 import plotly.express as px
-from settings_checkers import p_checkers, pm_checkers
-from vizualazing import analyze, createDictionaryOfBarChart
+from settings_inputs import p_checkers, pm_checkers, dropdown_charts
+from vizualazing import analyze, createBarChart, createChoicesOfDataFrame
 
 def main(page: ft.Page):
     MAIN_COLOR = "#3366CC"
@@ -23,14 +23,18 @@ def main(page: ft.Page):
     content = ft.GridView(
         expand=1,
         spacing=5,
-        max_extent=1200
+        max_extent=400
     )
 
     page.add(content)
 
     def open_settings(e):
+        # Сделать на выбор отображение оси X и Y 
         def close_settings(e):
             settings.open = False
+            types = {'political':[int(check.value)*(i+1) for i,check in enumerate(p_checkers) if check.value],
+            'people_main':[int(check.value)*(i+1) for i,check in enumerate(pm_checkers) if check.value]}
+            content.controls[-2].content.controls[0] = createBarChart(createChoicesOfDataFrame(data, types), 'political')
             page.update()
 
         def open_political(e):
@@ -71,16 +75,6 @@ def main(page: ft.Page):
             window.open = True
             page.update()
 
-        dropdown_charts = ft.Dropdown(
-            width=200,
-            options=[
-                ft.dropdown.Option("Политические предпочтения"),
-                ft.dropdown.Option("Главное в людях"),
-                ft.dropdown.Option("Главное в жизни"),
-                ft.dropdown.Option("Интересы")
-            ]
-        )
-
         settings = ft.AlertDialog(
             modal=True,
             title=ft.Text("Настройки"),
@@ -100,15 +94,20 @@ def main(page: ft.Page):
 
         content.controls.append(content.controls[-1])
 
-        bar_data = createDictionaryOfBarChart(data, 'political')
-        
-        px.bar(bar_data['data'], x=bar_data['xAxis'], y=bar_data["yAxis"], color_discrete_sequence=[MAIN_COLOR], template='plotly_dark').show()
-
         content.controls[-2] = (
             ft.Container(
-                content = PlotlyChart(px.bar(bar_data['data'], x=bar_data['xAxis'], y=bar_data["yAxis"], color_discrete_sequence=[MAIN_COLOR], template='plotly_dark')),
-                width=600,
-                height=600,
+                content=ft.Stack(controls=[createBarChart(data, 'political'), 
+                ft.IconButton(
+                    icon=ft.icons.SETTINGS,
+                    icon_color=SECONARY_COLOR,
+                    icon_size=30,
+                    tooltip="Settings",
+                    on_click=open_settings,
+                    right=0
+                )]),
+                padding=20,
+                width=400,
+                height=400,
                 border_radius=20,
                 border=ft.border.all(2, SECONARY_BG_COLOR)
             )
