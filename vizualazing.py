@@ -113,10 +113,11 @@ def createChoicesOfDataFrame(df, choice: dict[str, list[int]]) -> pd.DataFrame: 
     filter = []
     for key in choice.keys():
         for value in choice[key]:
-            filter.append(f"(df['{key}']=={value})")
-    print("|".join(filter))
-    result = df[eval("|".join(filter))].copy()
-    return result
+            filter.append(f"(df['{key}']!={value})")
+    if filter:
+        print("&".join(filter))
+        return df[eval("&".join(filter))]
+    return df
 
 
 def analyze(): # Создаёт датафрейм из CSV

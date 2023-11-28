@@ -32,8 +32,8 @@ def main(page: ft.Page):
         # Сделать на выбор отображение оси X и Y 
         def close_settings(e):
             settings.open = False
-            types = {'political':[int(check.value)*(i+1) for i,check in enumerate(p_checkers) if check.value],
-            'people_main':[int(check.value)*(i+1) for i,check in enumerate(pm_checkers) if check.value]}
+            types = {'political':[int(not check.value)*(i+1) for i,check in enumerate(p_checkers) if not check.value],
+            'people_main':[int(not check.value)*(i+1) for i,check in enumerate(pm_checkers) if not check.value]}
             content.controls[-2].content.controls[0] = createBarChart(createChoicesOfDataFrame(data, types), 'political')
             page.update()
 
