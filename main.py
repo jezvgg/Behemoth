@@ -1,7 +1,7 @@
 import flet as ft
 from flet.plotly_chart import PlotlyChart
 import plotly.express as px
-from settings_inputs import p_checkers, pm_checkers, dropdown_charts, dropdown_options
+from settings_inputs import p_checkers, pm_checkers, dropdown_charts, dropdown_options, lm_checkers
 from vizualazing import analyze, createBarChart, createChoicesOfDataFrame
 
 def main(page: ft.Page):
@@ -33,7 +33,8 @@ def main(page: ft.Page):
         def close_settings(e):
             settings.open = False
             types = {'political':[int(not check.value)*(i+1) for i,check in enumerate(p_checkers) if not check.value],
-            'people_main':[int(not check.value)*(i+1) for i,check in enumerate(pm_checkers) if not check.value]}
+            'people_main':[int(not check.value)*(i+1) for i,check in enumerate(pm_checkers) if not check.value],
+            'life_main':[int(not check.value)*(i+1) for i,check in enumerate(lm_checkers) if not check.value]}
             chart = dropdown_charts.value
             content.controls[i].content.controls[0].controls[0].value = chart
             content.controls[i].content.controls[1] = createBarChart(createChoicesOfDataFrame(data, types), dropdown_options[chart])
@@ -77,12 +78,32 @@ def main(page: ft.Page):
             window.open = True
             page.update()
 
+        def open_life(e):
+            def close_window(e):
+                window.open = False
+                settings.open = True
+                page.update()
+
+            window = ft.AlertDialog(
+                modal=True,
+                title=ft.Text("Главное в жизни"),
+                content=ft.Container(
+                            content=ft.Column(expand=False,
+                            controls=lm_checkers), 
+                            height=400),
+                actions=[ft.TextButton("Done", on_click=close_window)])
+
+            page.add(window)
+            window.open = True
+            page.update()
+
         settings = ft.AlertDialog(
             modal=True,
             title=ft.Text("Настройки"),
             content=ft.Container(content = ft.Column(controls=[dropdown_charts,ft.Text("Настроить пересечения интересов"), 
             ft.TextButton(text="Политические предпочтения", on_click=open_political), 
-            ft.TextButton(text="Главное в людях", on_click=open_people)]), height=400, width=300),
+            ft.TextButton(text="Главное в людях", on_click=open_people),
+            ft.TextButton(text="Главное в жизни", on_click=open_life)]), height=400, width=300),
             actions=[ft.TextButton("Done", on_click=close_settings)]
         )
 

@@ -21,6 +21,17 @@ pm_check6 = ft.Checkbox(label="юмор и жизнелюбие", value=True)
 
 pm_checkers = [pm_check1, pm_check2, pm_check3, pm_check4, pm_check5, pm_check6]
 
+lm_check1 = ft.Checkbox(label="семья и дети", value=True)
+lm_check2 = ft.Checkbox(label="карьера и деньги", value=True)
+lm_check3 = ft.Checkbox(label="развлечения и отдых", value=True)
+lm_check4 = ft.Checkbox(label="наука и исследования", value=True)
+lm_check5 = ft.Checkbox(label="совершенствование мира", value=True)
+lm_check6 = ft.Checkbox(label="саморазвитие", value=True)
+lm_check7 = ft.Checkbox(label="красота и искусство", value=True)
+lm_check8 = ft.Checkbox(label="слава и влияние", value=True)
+
+lm_checkers = [lm_check1, lm_check2, lm_check3, lm_check4, lm_check5, lm_check6, lm_check7, lm_check8]
+
 dropdown_charts = ft.Dropdown(
             value="Политические предпочтения",
             label="Выбор графика",
