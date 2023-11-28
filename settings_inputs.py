@@ -22,7 +22,9 @@ pm_check6 = ft.Checkbox(label="юмор и жизнелюбие", value=True)
 pm_checkers = [pm_check1, pm_check2, pm_check3, pm_check4, pm_check5, pm_check6]
 
 dropdown_charts = ft.Dropdown(
-            width=200,
+            value="Политические предпочтения",
+            label="Выбор графика",
+            width=300,
             options=[
                 ft.dropdown.Option("Политические предпочтения"),
                 ft.dropdown.Option("Главное в людях"),
@@ -30,3 +32,7 @@ dropdown_charts = ft.Dropdown(
                 ft.dropdown.Option("Интересы")
             ]
         )
+
+dropdown_options = {"Политические предпочтения":'political',
+"Главное в людях":"people_main",
+"Главное в жизни":"life_main"}

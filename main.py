@@ -1,7 +1,7 @@
 import flet as ft
 from flet.plotly_chart import PlotlyChart
 import plotly.express as px
-from settings_inputs import p_checkers, pm_checkers, dropdown_charts
+from settings_inputs import p_checkers, pm_checkers, dropdown_charts, dropdown_options
 from vizualazing import analyze, createBarChart, createChoicesOfDataFrame
 
 def main(page: ft.Page):
@@ -28,13 +28,15 @@ def main(page: ft.Page):
 
     page.add(content)
 
-    def open_settings(e):
+    def open_settings(e, i):
         # Сделать на выбор отображение оси X и Y 
         def close_settings(e):
             settings.open = False
             types = {'political':[int(not check.value)*(i+1) for i,check in enumerate(p_checkers) if not check.value],
             'people_main':[int(not check.value)*(i+1) for i,check in enumerate(pm_checkers) if not check.value]}
-            content.controls[-2].content.controls[0] = createBarChart(createChoicesOfDataFrame(data, types), 'political')
+            chart = dropdown_charts.value
+            content.controls[i].content.controls[0].controls[0].value = chart
+            content.controls[i].content.controls[1] = createBarChart(createChoicesOfDataFrame(data, types), dropdown_options[chart])
             page.update()
 
         def open_political(e):
@@ -90,26 +92,36 @@ def main(page: ft.Page):
 
     def add_card(e):
 
-        open_settings(e)
+        i = len(content.controls)-1
 
-        content.controls.append(content.controls[-1])
+        open_settings(e, i)
 
-        content.controls[-2] = (
-            ft.Container(
-                content=ft.Stack(controls=[createBarChart(data, 'political'), 
+        content.controls[i] = (
+            ft.Container(content=ft.Stack(
+                controls=[ft.Row([ft.Text(dropdown_charts.value, size=16)], top=11),
+                createBarChart(data, dropdown_options[dropdown_charts.value]),
                 ft.IconButton(
                     icon=ft.icons.SETTINGS,
                     icon_color=SECONARY_COLOR,
                     icon_size=30,
                     tooltip="Settings",
-                    on_click=open_settings,
+                    on_click=lambda x: open_settings(x, i),
                     right=0
-                )]),
-                padding=20,
-                width=400,
-                height=400,
-                border_radius=20,
-                border=ft.border.all(2, SECONARY_BG_COLOR)
+                )]
+            ), width=400,
+               height=400,
+               padding=20,
+               border = ft.border.all(2, SECONARY_BG_COLOR),
+               border_radius=20
+        ))
+
+        content.controls.append(
+        ft.Container(
+            content=ft.FloatingActionButton(icon=ft.icons.ADD, on_click=add_card, bgcolor=BG_COLOR),
+            width=600,
+            height=600,
+            border_radius=20,
+            border=ft.border.all(2, SECONARY_BG_COLOR)
             )
         )
         page.update()

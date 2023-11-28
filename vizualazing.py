@@ -78,10 +78,10 @@ def createBarChart(df, type) -> ft.BarChart:  # Делает словарь ко
         barchart.update()
 
     barchart = ft.BarChart(tooltip_bgcolor="#11151C", 
-    max_y=max(df[type].value_counts().tolist()[1:])+max(df[type].value_counts().tolist()[1:])//5,
-    on_chart_event=hover)
+    max_y=max(df[type].value_counts().tolist()[1:])+max(df[type].value_counts().tolist()[1:])//4,
+    on_chart_event=hover
+    )
 
-    print(df[type].value_counts())
     axis = dict(df[type].value_counts())
     if 0 in axis.keys():
         del axis[0]
@@ -115,7 +115,6 @@ def createChoicesOfDataFrame(df, choice: dict[str, list[int]]) -> pd.DataFrame: 
         for value in choice[key]:
             filter.append(f"(df['{key}']!={value})")
     if filter:
-        print("&".join(filter))
         return df[eval("&".join(filter))]
     return df
 
