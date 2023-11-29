@@ -1,8 +1,8 @@
 import flet as ft
 from flet.plotly_chart import PlotlyChart
 import plotly.express as px
-from settings_inputs import p_checkers, pm_checkers, dropdown_charts, dropdown_options, lm_checkers
-from vizualazing import analyze, createBarChart, createChoicesOfDataFrame
+from settings_inputs import *
+from vizualazing import analyze, createChart, createChoicesOfDataFrame
 
 def main(page: ft.Page):
     MAIN_COLOR = "#3366CC"
@@ -21,7 +21,7 @@ def main(page: ft.Page):
     data = analyze()
     
     content = ft.GridView(
-        expand=1,
+        expand=False,
         spacing=5,
         max_extent=400
     )
@@ -37,7 +37,7 @@ def main(page: ft.Page):
             'life_main':[int(not check.value)*(i+1) for i,check in enumerate(lm_checkers) if not check.value]}
             chart = dropdown_charts.value
             content.controls[i].content.controls[0].controls[0].value = chart
-            content.controls[i].content.controls[1] = createBarChart(createChoicesOfDataFrame(data, types), dropdown_options[chart])
+            content.controls[i].content.controls[1] = createChart(createChoicesOfDataFrame(data, types), dropdown_options[chart], use_axis=axis_check.value)
             page.update()
 
         def open_political(e):
@@ -103,7 +103,8 @@ def main(page: ft.Page):
             content=ft.Container(content = ft.Column(controls=[dropdown_charts,ft.Text("Настроить пересечения интересов"), 
             ft.TextButton(text="Политические предпочтения", on_click=open_political), 
             ft.TextButton(text="Главное в людях", on_click=open_people),
-            ft.TextButton(text="Главное в жизни", on_click=open_life)]), height=400, width=300),
+            ft.TextButton(text="Главное в жизни", on_click=open_life),
+            axis_check]), height=400, width=300),
             actions=[ft.TextButton("Done", on_click=close_settings)]
         )
 
@@ -119,8 +120,8 @@ def main(page: ft.Page):
 
         content.controls[i] = (
             ft.Container(content=ft.Stack(
-                controls=[ft.Row([ft.Text(dropdown_charts.value, size=16)], top=11),
-                createBarChart(data, dropdown_options[dropdown_charts.value]),
+                controls=[ft.Row([ft.Text(dropdown_charts.value, size=16)], top=11, left=30),
+                createChart(data, dropdown_options[dropdown_charts.value]),
                 ft.IconButton(
                     icon=ft.icons.SETTINGS,
                     icon_color=SECONARY_COLOR,
@@ -133,16 +134,18 @@ def main(page: ft.Page):
                height=400,
                padding=20,
                border = ft.border.all(2, SECONARY_BG_COLOR),
-               border_radius=20
+               border_radius=20,
+               expand=False
         ))
 
         content.controls.append(
         ft.Container(
             content=ft.FloatingActionButton(icon=ft.icons.ADD, on_click=add_card, bgcolor=BG_COLOR),
-            width=600,
-            height=600,
+            width=400,
+            height=400,
             border_radius=20,
-            border=ft.border.all(2, SECONARY_BG_COLOR)
+            border=ft.border.all(2, SECONARY_BG_COLOR),
+            expand=False
             )
         )
         page.update()
@@ -150,14 +153,15 @@ def main(page: ft.Page):
     content.controls.append(
         ft.Container(
             content=ft.FloatingActionButton(icon=ft.icons.ADD, on_click=add_card, bgcolor=BG_COLOR),
-            width=600,
-            height=600,
+            width=400,
+            height=400,
             border_radius=20,
-            border=ft.border.all(2, SECONARY_BG_COLOR)
+            border=ft.border.all(2, SECONARY_BG_COLOR),
+            expand=False
         )
     )
 
     page.update()
 
-
-ft.app(target=main)
+if __name__ == "__main__":
+    ft.app(target=main)

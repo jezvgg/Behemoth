@@ -66,8 +66,9 @@ def createDictionaryOfVenna(df, columns):  # Делает словарь кот�
     return Venna
 
 
-def createBarChart(df, type) -> ft.BarChart:  # Делает словарь который отправляют клиенту для столбчатого графика(ов)
+def createBarChart(df, type, size:int = 1, use_axis: bool = True, **kwargs) -> ft.BarChart:  # Делает словарь который отправляют клиенту для столбчатого графика(ов)
 
+    # ----- Функция срабатывающая при наведении -----
     def hover(e: ft.BarChartEvent):
         for group_index, group in enumerate(barchart.bar_groups):
             for rod_index, rod in enumerate(group.bar_rods):
@@ -77,16 +78,35 @@ def createBarChart(df, type) -> ft.BarChart:  # Делает словарь ко
                     rod.color = "#3366CC"
         barchart.update()
 
-    barchart = ft.BarChart(tooltip_bgcolor="#11151C", 
-    max_y=max(df[type].value_counts().tolist()[1:])+max(df[type].value_counts().tolist()[1:])//4,
-    on_chart_event=hover
-    )
 
+    # ----- Создание данных графика -----
     axis = dict(df[type].value_counts())
     if 0 in axis.keys():
         del axis[0]
     AxisX = [tips[type][name-1] for name in axis.keys()]
     AxisY = list(axis.values())
+
+
+    # ----- Объявление графика и основные настройки -----
+    max_y = max(df[type].value_counts().tolist()[1:])+max(df[type].value_counts().tolist()[1:])//4
+    barchart = ft.BarChart(tooltip_bgcolor="#11151C", 
+    max_y=max_y,
+    on_chart_event=hover
+    )
+
+
+    # ----- Создание осей -----
+    if use_axis:
+        name_size = int((500/len(AxisX))//10)
+        barchart.left_axis = ft.ChartAxis(labels=[ft.ChartAxisLabel(value=i*5, label=ft.Text(f"{i*5}")) for i in range(max_y//5)])
+        barchart.bottom_axis = ft.ChartAxis()
+        barchart.bottom_axis.labels = [ft.ChartAxisLabel(value=i, label=ft.Text(name[:name_size], size=10)) for i,name in enumerate(AxisX)]
+        barchart.horizontal_grid_lines=ft.ChartGridLines(
+            color="#1A202A", width=1, dash_pattern=[3, 3]
+        )
+
+
+    # ----- Создание графика -----
     for i, value in enumerate(zip(AxisX,AxisY)):
         barchart.bar_groups.append(
             ft.BarChartGroup(
@@ -95,7 +115,7 @@ def createBarChart(df, type) -> ft.BarChart:  # Делает словарь ко
                     ft.BarChartRod(
                         from_y=0,
                         to_y=value[1],
-                        width=35,
+                        width=(size*280)//len(AxisX),
                         color="#3366CC",
                         tooltip=f'{value[0]} \n{value[1]}',
                         border_radius=5
@@ -105,6 +125,65 @@ def createBarChart(df, type) -> ft.BarChart:  # Делает словарь ко
         )
     return barchart
 
+
+def createPieChart(df, type, space: bool = True, **kwargs) -> ft.PieChart:
+
+    # ----- Стили для Hover -----
+    normal_radius = 60
+    hover_radius = 65
+    normal_title_style = ft.TextStyle(
+        size=16, color=ft.colors.WHITE, weight=ft.FontWeight.BOLD
+    )
+    hover_title_style = ft.TextStyle(
+        size=19,
+        color=ft.colors.WHITE,
+        weight=ft.FontWeight.BOLD,
+        shadow=ft.BoxShadow(blur_radius=2, color=ft.colors.BLACK54),
+    )
+    colors = [ft.colors.BLUE, ft.colors.YELLOW, ft.colors.PURPLE, ft.colors.GREEN, ft.colors.RED, ft.colors.PINK, ft.colors.PURPLE, ft.colors.DEEP_PURPLE, ft.colors.INDIGO]
+
+
+    # ----- hover -----
+    def hover(e: ft.PieChartEvent):
+        for idx, section in enumerate(chart.sections):
+            if idx == e.section_index:
+                section.radius = hover_radius
+                section.title_style = hover_title_style
+            else:
+                section.radius = normal_radius
+                section.title_style = normal_title_style
+        chart.update()
+
+
+    # ----- Data -----
+    axis = dict(df[type].value_counts())
+    if 0 in axis.keys():
+        del axis[0]
+    AxisX = [tips[type][name-1] for name in axis.keys()]
+    AxisY = [value/(sum(axis.values())/100) for value in axis.values()]
+
+
+    # ----- Create chart -----
+    chart = ft.PieChart(
+        sections=[ft.PieChartSection(value[1], title=f"{value[0]}\n{int(value[1])}" if value[1]>10 else "", color=colors[i], 
+        radius=normal_radius, title_style=normal_title_style) for i,value in enumerate(zip(AxisX, AxisY))],
+        sections_space=1,
+        on_chart_event=hover)
+
+
+    # ----- Add space -----
+    if space:
+        chart.center_space_radius=40
+
+    return chart
+
+
+def createChart(df, type, *args, **kwargs):
+    match type:
+        case 'political' | 'people_main' | "life_main":
+            return createBarChart(df, type, *args, **kwargs)
+        case 'politicalPie' | 'people_mainPie' | "life_mainPie" | "sexPie":
+            return createPieChart(df, type[:-3], *args, **kwargs)
 
 def createChoicesOfDataFrame(df, choice: dict[str, list[int]]) -> pd.DataFrame:  # Оставляет в датафреме только нужные строки
     '''

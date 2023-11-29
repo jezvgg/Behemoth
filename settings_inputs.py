@@ -33,17 +33,27 @@ lm_check8 = ft.Checkbox(label="слава и влияние", value=True)
 lm_checkers = [lm_check1, lm_check2, lm_check3, lm_check4, lm_check5, lm_check6, lm_check7, lm_check8]
 
 dropdown_charts = ft.Dropdown(
-            value="Политические предпочтения",
+            value="Политика (столбцы)",
             label="Выбор графика",
             width=300,
             options=[
-                ft.dropdown.Option("Политические предпочтения"),
-                ft.dropdown.Option("Главное в людях"),
-                ft.dropdown.Option("Главное в жизни"),
+                ft.dropdown.Option("Политика (столбцы)"),
+                ft.dropdown.Option("Главное в людях (столбцы)"),
+                ft.dropdown.Option("Главное в жизни (столбцы)"),
+                ft.dropdown.Option("Политика (пирог)"),
+                ft.dropdown.Option("Главное в людях (пирог)"),
+                ft.dropdown.Option("Главное в жизни (пирог)"),
+                ft.dropdown.Option("Пол"),
                 ft.dropdown.Option("Интересы")
             ]
         )
 
-dropdown_options = {"Политические предпочтения":'political',
-"Главное в людях":"people_main",
-"Главное в жизни":"life_main"}
+dropdown_options = {"Политика (столбцы)":'political',
+"Главное в людях (столбцы)":"people_main",
+"Главное в жизни (столбцы)":"life_main",
+"Политика (пирог)":"politicalPie",
+"Главное в людях (пирог)":"people_mainPie",
+"Главное в жизни (пирог)":"life_mainPie",
+"Пол":"sexPie"}
+
+axis_check = ft.Checkbox(label="Отобразить оси", value=True)
