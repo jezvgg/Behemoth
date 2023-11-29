@@ -2,6 +2,9 @@ import pandas as pd
 from math import prod
 from itertools import combinations
 import flet as ft
+import matplotlib_venn as svenn
+import matplotlib.pyplot as plt
+from flet.matplotlib_chart import MatplotlibChart
 
 
 typesTitles = {'political': 'Политические предпочтения', 'people_main': 'Главное в людях',
@@ -29,41 +32,12 @@ tips = {'political': ["коммунистические", "социалисти�
         'sex': ["s - муж", "s - жен"]}
 
 
-def DataFrameConvertBool(df):
-    '''
-    Делает булевыми значения
-    '''
-    for columns in df.columns[10:]:
-        df[columns] = df[columns].apply(lambda x: int(x)>0)
-    return df
-
-
-def getSeriesfromList(df, columns):  # Возращает Series в списке по списку колонок (нужно для prod)
-    result = []
-    for column in columns:
-        result.append(df[column])
-    return result
-
-
 def getCombinatiosOfList(rawList):  # Делает все возможные комбинации длиной больше 1-го по списку
     combos = []
     for i in range(len(rawList)):
         for combo in combinations(rawList, i + 1):
             combos.append(list(map(str, combo)))
     return combos
-
-
-def createDictionaryOfVenna(df, columns):  # Делает словарь который отправляют клиенту для графика Венна
-    dfVenna = DataFrameConvertBool(df[columns].copy())
-    list = []
-    for column in getCombinatiosOfList(columns):
-        dict = {}
-        dfVenna["+".join(column)] = prod(getSeriesfromList(df, column))  # Делает новую колонку путём перемножения старых
-        dict['sets'] = column
-        dict['size'] = dfVenna["+".join(column)].tolist().count(True)
-        list.append(dict)
-    Venna = {'interest': list}
-    return Venna
 
 
 def createBarChart(df, type, size:int = 1, use_axis: bool = True, **kwargs) -> ft.BarChart:  # Делает словарь который отправляют клиенту для столбчатого графика(ов)
@@ -178,6 +152,29 @@ def createPieChart(df, type, space: bool = True, **kwargs) -> ft.PieChart:
     return chart
 
 
+def createVennChartSmall(df, types: list, *args, **kwargs):
+
+    # ----- Collect data for venn -----
+    result = {}
+    for combo in getCombinatiosOfList(types):
+        result['&'.join(combo)] = sum(prod([df[element].apply(lambda x: int(x)>0) for element in combo]))
+    print(result)
+
+    # ----- Create PLT venn -----
+    fig, ax = plt.subplots()
+
+    match len(types):
+        case 2:
+            svenn.venn2(subsets=list(result.values()), set_labels=types)
+        case 3:
+            svenn.venn3(subsets=list(result.values()), set_labels=types)
+        case _:
+            raise Exception("types invalid!")
+
+    return MatplotlibChart(figure=fig)
+    
+
+
 def createChart(df, type, *args, **kwargs):
     match type:
         case 'political' | 'people_main' | "life_main":
@@ -185,9 +182,9 @@ def createChart(df, type, *args, **kwargs):
         case 'politicalPie' | 'people_mainPie' | "life_mainPie" | "sexPie":
             return createPieChart(df, type[:-3], *args, **kwargs)
 
-def createChoicesOfDataFrame(df, choice: dict[str, list[int]]) -> pd.DataFrame:  # Оставляет в датафреме только нужные строки
+def createChoicesOfDataFrame(df, choice: dict[str, list[int]]) -> pd.DataFrame:
     '''
-    Переделать
+    Оставляет в датафреме только нужные строки, переделал
     '''
     filter = []
     for key in choice.keys():
@@ -207,4 +204,4 @@ def analyze(): # Создаёт датафрейм из CSV
 
 if __name__ == "__main__":
     data = analyze()
-    print(createChoicesOfDataFrame(data, {'political':[1,2,3,4,5,6,6]}))
+    createVennChartSmall(data, ['Юмор', 'Футбол','Культура и искусство'])

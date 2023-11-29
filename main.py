@@ -97,16 +97,32 @@ def main(page: ft.Page):
             window.open = True
             page.update()
 
+        def on_change(e):
+            settings.content.content.controls = settings.content.content.controls[:5]
+            match dropdown_options[dropdown_charts.value]:
+                case 'political' | 'people_main' | "life_main":
+                    settings.content.content.controls.append(axis_check)
+            page.update()
+
+        
+        def delete_card(e):
+            content.controls.pop(i)
+            settings.open = False
+            page.update()
+
+        dropdown_charts.on_change=on_change
+
         settings = ft.AlertDialog(
             modal=True,
             title=ft.Text("Настройки"),
             content=ft.Container(content = ft.Column(controls=[dropdown_charts,ft.Text("Настроить пересечения интересов"), 
             ft.TextButton(text="Политические предпочтения", on_click=open_political), 
             ft.TextButton(text="Главное в людях", on_click=open_people),
-            ft.TextButton(text="Главное в жизни", on_click=open_life),
-            axis_check]), height=400, width=300),
-            actions=[ft.TextButton("Done", on_click=close_settings)]
+            ft.TextButton(text="Главное в жизни", on_click=open_life)]), 
+            height=400, width=300),
+            actions=[ft.TextButton("Done", on_click=close_settings), ft.TextButton("Delete card", on_click=delete_card)]
         )
+        on_change(e)
 
         page.add(settings)
         settings.open = True
