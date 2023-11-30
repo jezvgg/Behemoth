@@ -3,8 +3,15 @@ from math import prod
 from itertools import combinations
 import flet as ft
 import matplotlib_venn as svenn
+from venn._venn import venn_dispatch,
+from functools import partial
 import matplotlib.pyplot as plt
 from flet.matplotlib_chart import MatplotlibChart
+
+
+plt.rcParams.update({"text.color": "white",
+    'font.size':20,
+    'font.weight':550})
 
 
 typesTitles = {'political': 'Политические предпочтения', 'people_main': 'Главное в людях',
@@ -153,15 +160,15 @@ def createPieChart(df, type, space: bool = True, **kwargs) -> ft.PieChart:
 
 
 def createVennChartSmall(df, types: list, *args, **kwargs):
+    df = df.copy()
 
     # ----- Collect data for venn -----
     result = {}
     for combo in getCombinatiosOfList(types):
         result['&'.join(combo)] = sum(prod([df[element].apply(lambda x: int(x)>0) for element in combo]))
-    print(result)
 
     # ----- Create PLT venn -----
-    fig, ax = plt.subplots()
+    fig, ax = plt.subplots(figsize=(7,7))
 
     match len(types):
         case 2:
@@ -171,16 +178,36 @@ def createVennChartSmall(df, types: list, *args, **kwargs):
         case _:
             raise Exception("types invalid!")
 
-    return MatplotlibChart(figure=fig)
+    return MatplotlibChart(figure=fig, transparent=True, expand=True)
+
+
+def createVennChartMedium(df, types: list, *args, **kwargs):
+    df = df.copy()
+
+    # ----- Collect data for venn -----
+    result = {}
+    for label in types:
+        result[label] = set(df[df[label].apply(lambda x: int(x)>0)==True].index)
     
+    fig, ax = plt.subplots(figsize=(7,7))
+    plt.figure(1,1)
+
+    venn = 
+
+    return MatplotlibChart(figure=fig, transparent=True, expand=True)
 
 
-def createChart(df, type, *args, **kwargs):
+def createChart(df, type, types: None, *args, **kwargs):
     match type:
         case 'political' | 'people_main' | "life_main":
             return createBarChart(df, type, *args, **kwargs)
         case 'politicalPie' | 'people_mainPie' | "life_mainPie" | "sexPie":
             return createPieChart(df, type[:-3], *args, **kwargs)
+        case 'interests':
+            if len(types)<4:
+                return createVennChartSmall(df, types)
+            else:
+                return createVennChartMedium(df, types)
 
 def createChoicesOfDataFrame(df, choice: dict[str, list[int]]) -> pd.DataFrame:
     '''
@@ -204,4 +231,4 @@ def analyze(): # Создаёт датафрейм из CSV
 
 if __name__ == "__main__":
     data = analyze()
-    createVennChartSmall(data, ['Юмор', 'Футбол','Культура и искусство'])
+    createVennChartMedium(data, ['Юмор', 'Футбол','Культура и искусство'])

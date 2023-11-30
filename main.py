@@ -37,7 +37,7 @@ def main(page: ft.Page):
             'life_main':[int(not check.value)*(i+1) for i,check in enumerate(lm_checkers) if not check.value]}
             chart = dropdown_charts.value
             content.controls[i].content.controls[0].controls[0].value = chart
-            content.controls[i].content.controls[1] = createChart(createChoicesOfDataFrame(data, types), dropdown_options[chart], use_axis=axis_check.value)
+            content.controls[i].content.controls[1] = createChart(createChoicesOfDataFrame(data, types), dropdown_options[chart], use_axis=axis_check.value, types=interests)
             page.update()
 
         def open_political(e):
@@ -102,6 +102,11 @@ def main(page: ft.Page):
             match dropdown_options[dropdown_charts.value]:
                 case 'political' | 'people_main' | "life_main":
                     settings.content.content.controls.append(axis_check)
+                case 'interests':
+                    settings.content.content.controls.append(dropdown_interests)
+                    settings.content.content.controls.append(ft.OutlinedButton(text="Добавить", on_click=add_interest))
+                    for label in interests:
+                        settings.content.content.controls.append(ft.Text(f'Добавлено: {label}', size=10))
             page.update()
 
         
@@ -110,7 +115,15 @@ def main(page: ft.Page):
             settings.open = False
             page.update()
 
+
+        def add_interest(e):
+            interests.append(dropdown_interests.value)
+            on_change(e)
+
+
         dropdown_charts.on_change=on_change
+        interests = []
+        dropdown_interests.options = [ft.dropdown.Option(type_) for type_ in sorted(data.columns[11:], key=lambda x: sum(data[x].apply(lambda x: int(x)>0)))]
 
         settings = ft.AlertDialog(
             modal=True,
@@ -137,7 +150,7 @@ def main(page: ft.Page):
         content.controls[i] = (
             ft.Container(content=ft.Stack(
                 controls=[ft.Row([ft.Text(dropdown_charts.value, size=16)], top=11, left=30),
-                createChart(data, dropdown_options[dropdown_charts.value]),
+                createChart(data, 'political', types=None),
                 ft.IconButton(
                     icon=ft.icons.SETTINGS,
                     icon_color=SECONARY_COLOR,

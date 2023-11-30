@@ -54,6 +54,14 @@ dropdown_options = {"Политика (столбцы)":'political',
 "Политика (пирог)":"politicalPie",
 "Главное в людях (пирог)":"people_mainPie",
 "Главное в жизни (пирог)":"life_mainPie",
-"Пол":"sexPie"}
+"Пол":"sexPie",
+"Интересы":"interests"}
 
 axis_check = ft.Checkbox(label="Отобразить оси", value=True)
+
+dropdown_interests = ft.Dropdown(
+    value='Юмор',
+    label="Добавление интересов",
+    width=300,
+    options=[]
+)
