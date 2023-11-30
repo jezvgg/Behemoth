@@ -4,6 +4,7 @@ import plotly.express as px
 from settings_inputs import *
 from vizualazing import analyze, createChart, createChoicesOfDataFrame
 from Card import Card, NewCard
+from myGrid import MyGrid
 
 
 def main(page: ft.Page):
@@ -23,9 +24,8 @@ def main(page: ft.Page):
     data = analyze()
     
     content = ft.GridView(
-        expand=False,
-        spacing=5,
-        max_extent=400
+        max_extent=400,
+        spacing=5
     )
 
     page.add(content)
@@ -38,7 +38,6 @@ def main(page: ft.Page):
             'people_main':[int(not check.value)*(i+1) for i,check in enumerate(pm_checkers) if not check.value],
             'life_main':[int(not check.value)*(i+1) for i,check in enumerate(lm_checkers) if not check.value]}
             chart = dropdown_charts.value
-            content.controls[i].content.controls[0].controls[0].value = chart
             content.controls[i].content.controls[1] = createChart(createChoicesOfDataFrame(data, types), dropdown_options[chart], use_axis=axis_check.value, types=interests)
             page.update()
 
