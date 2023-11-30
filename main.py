@@ -3,6 +3,8 @@ from flet.plotly_chart import PlotlyChart
 import plotly.express as px
 from settings_inputs import *
 from vizualazing import analyze, createChart, createChoicesOfDataFrame
+from Card import Card, NewCard
+
 
 def main(page: ft.Page):
     MAIN_COLOR = "#3366CC"
@@ -147,48 +149,17 @@ def main(page: ft.Page):
 
         open_settings(e, i)
 
-        content.controls[i] = (
-            ft.Container(content=ft.Stack(
-                controls=[ft.Row([ft.Text(dropdown_charts.value, size=16)], top=11, left=30),
-                createChart(data, 'political', types=None),
-                ft.IconButton(
-                    icon=ft.icons.SETTINGS,
-                    icon_color=SECONARY_COLOR,
-                    icon_size=30,
-                    tooltip="Settings",
-                    on_click=lambda x: open_settings(x, i),
-                    right=0
-                )]
-            ), width=400,
-               height=400,
-               padding=20,
-               border = ft.border.all(2, SECONARY_BG_COLOR),
-               border_radius=20,
-               expand=False
-        ))
-
-        content.controls.append(
-        ft.Container(
-            content=ft.FloatingActionButton(icon=ft.icons.ADD, on_click=add_card, bgcolor=BG_COLOR),
-            width=400,
-            height=400,
-            border_radius=20,
-            border=ft.border.all(2, SECONARY_BG_COLOR),
-            expand=False
-            )
+        content.controls[i] = Card(
+            label=dropdown_charts.value,
+            chart=createChart(data, 'political', ['political']),
+            size=(1,1),
+            open_settings=lambda x: open_settings(x,i)
         )
+
+        content.controls.append(NewCard(add_card))
         page.update()
 
-    content.controls.append(
-        ft.Container(
-            content=ft.FloatingActionButton(icon=ft.icons.ADD, on_click=add_card, bgcolor=BG_COLOR),
-            width=400,
-            height=400,
-            border_radius=20,
-            border=ft.border.all(2, SECONARY_BG_COLOR),
-            expand=False
-        )
-    )
+    content.controls.append(NewCard(add_card))
 
     page.update()
 
