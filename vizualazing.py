@@ -3,7 +3,7 @@ from math import prod
 from itertools import combinations
 import flet as ft
 import matplotlib_venn as svenn
-from venn._venn import venn_dispatch, get_n_sets, draw_ellipse, init_axes, draw_text
+from venn._venn import *
 from venn._constants import *
 from functools import partial
 import matplotlib.pyplot as plt

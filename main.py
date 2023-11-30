@@ -1,6 +1,4 @@
 import flet as ft
-from flet.plotly_chart import PlotlyChart
-import plotly.express as px
 from settings_inputs import *
 from vizualazing import analyze, createChart, createChoicesOfDataFrame
 from Card import Card, NewCard
@@ -23,12 +21,9 @@ def main(page: ft.Page):
 
     data = analyze()
     
-    content = ft.GridView(
-        max_extent=400,
-        spacing=5
-    )
+    main_content = MyGrid(size=(4,4), spacing=5, expand=True)
 
-    page.add(content)
+    page.add(main_content)
 
     def open_settings(e, i):
         # Сделать на выбор отображение оси X и Y 
@@ -38,7 +33,10 @@ def main(page: ft.Page):
             'people_main':[int(not check.value)*(i+1) for i,check in enumerate(pm_checkers) if not check.value],
             'life_main':[int(not check.value)*(i+1) for i,check in enumerate(lm_checkers) if not check.value]}
             chart = dropdown_charts.value
-            content.controls[i].content.controls[1] = createChart(createChoicesOfDataFrame(data, types), dropdown_options[chart], use_axis=axis_check.value, types=interests)
+            main_content[i] = Card(label=chart, 
+            chart=createChart(createChoicesOfDataFrame(data, types), dropdown_options[chart], use_axis=axis_check.value, types=interests),
+            size=(1,1),
+            open_settings=lambda x: open_settings(x, i))
             page.update()
 
         def open_political(e):
@@ -112,7 +110,7 @@ def main(page: ft.Page):
 
         
         def delete_card(e):
-            content.controls.pop(i)
+            main_content.pop(i)
             settings.open = False
             page.update()
 
@@ -144,21 +142,21 @@ def main(page: ft.Page):
 
     def add_card(e):
 
-        i = len(content.controls)-1
+        i = len(main_content.cards)-1
 
         open_settings(e, i)
 
-        content.controls[i] = Card(
-            label=dropdown_charts.value,
+        main_content[i] = Card(
+            label='Политические предпочтения',
             chart=createChart(data, 'political', ['political']),
             size=(1,1),
             open_settings=lambda x: open_settings(x,i)
         )
 
-        content.controls.append(NewCard(add_card))
+        main_content.append(NewCard(add_card))
         page.update()
 
-    content.controls.append(NewCard(add_card))
+    main_content.append(NewCard(add_card))
 
     page.update()
 

@@ -32,6 +32,14 @@ class Card(ft.Container):
         self.border_radius=20
 
 
+    def __str__(self):
+        return f'MyCard({self.label}, {self.chart}, {self.size})'
+
+
+    def __repr__(self):
+        return str(self)
+
+
 
 class NewCard(ft.Container):
 
