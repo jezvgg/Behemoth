@@ -3,15 +3,11 @@ from math import prod
 from itertools import combinations
 import flet as ft
 import matplotlib_venn as svenn
-from venn._venn import venn_dispatch,
+from venn._venn import venn_dispatch, get_n_sets, draw_ellipse, init_axes, draw_text
+from venn._constants import *
 from functools import partial
 import matplotlib.pyplot as plt
 from flet.matplotlib_chart import MatplotlibChart
-
-
-plt.rcParams.update({"text.color": "white",
-    'font.size':20,
-    'font.weight':550})
 
 
 typesTitles = {'political': 'Политические предпочтения', 'people_main': 'Главное в людях',
@@ -170,6 +166,10 @@ def createVennChartSmall(df, types: list, *args, **kwargs):
     # ----- Create PLT venn -----
     fig, ax = plt.subplots(figsize=(7,7))
 
+    plt.rcParams.update({"text.color": "white",
+    'font.size':20,
+    'font.weight':550})
+
     match len(types):
         case 2:
             svenn.venn2(subsets=list(result.values()), set_labels=types)
@@ -181,6 +181,31 @@ def createVennChartSmall(df, types: list, *args, **kwargs):
     return MatplotlibChart(figure=fig, transparent=True, expand=True)
 
 
+def draw_venn(*, petal_labels, dataset_labels, hint_hidden, colors, figsize, fontsize, legend_loc, ax):
+    """Draw true Venn diagram, annotate petals and dataset labels"""
+    n_sets = get_n_sets(petal_labels, dataset_labels)
+    if 2 <= n_sets < 6:
+        draw_shape = draw_ellipse
+    elif n_sets == 6:
+        draw_shape = draw_triangle
+    else:
+        raise ValueError("Number of sets must be between 2 and 6")
+    ax = init_axes(ax, figsize)
+    shape_params = zip(
+        SHAPE_COORDS[n_sets], SHAPE_DIMS[n_sets], SHAPE_ANGLES[n_sets], colors
+    )
+    for coords, dims, angle, color in shape_params:
+        draw_shape(ax, *coords, *dims, angle, color)
+    for logic, petal_label in petal_labels.items():
+        # some petals could have been modified manually:
+        if logic in PETAL_LABEL_COORDS[n_sets]:
+            x, y = PETAL_LABEL_COORDS[n_sets][logic]
+            draw_text(ax, x, y, petal_label, fontsize=fontsize, color='white')
+    if legend_loc is not None:
+        ax.legend(dataset_labels, loc=legend_loc, prop={"size": fontsize})
+    return ax
+
+
 def createVennChartMedium(df, types: list, *args, **kwargs):
     df = df.copy()
 
@@ -189,10 +214,19 @@ def createVennChartMedium(df, types: list, *args, **kwargs):
     for label in types:
         result[label] = set(df[df[label].apply(lambda x: int(x)>0)==True].index)
     
+
+    # ----- Settings plt -----
     fig, ax = plt.subplots(figsize=(7,7))
     plt.figure(1,1)
 
-    venn = 
+    plt.rcParams.update({"text.color": "black",
+    'font.size':16,
+    'font.weight':400})
+
+
+    # ----- Create venn chart -----
+    venn = partial(venn_dispatch, func=draw_venn, hint_hidden=False)
+    venn(result, ax=ax)
 
     return MatplotlibChart(figure=fig, transparent=True, expand=True)
 
