@@ -33,6 +33,8 @@ def main(page: ft.Page):
             'people_main':[int(not check.value)*(i+1) for i,check in enumerate(pm_checkers) if not check.value],
             'life_main':[int(not check.value)*(i+1) for i,check in enumerate(lm_checkers) if not check.value]}
             chart = dropdown_charts.value
+            print(sizes_values[dropdown_sizes.value])
+            main_content.resize(i, sizes_values[dropdown_sizes.value])
             main_content[i] = Card(label=chart, 
             chart=createChart(createChoicesOfDataFrame(data, types), dropdown_options[chart], use_axis=axis_check.value, types=interests),
             size=sizes_values[dropdown_sizes.value],
@@ -127,11 +129,12 @@ def main(page: ft.Page):
         settings = ft.AlertDialog(
             modal=True,
             title=ft.Text("Настройки"),
-            content=ft.Container(content = ft.Column(controls=[dropdown_charts,ft.Text("Настроить пересечения интересов"), 
-            ft.TextButton(text="Политические предпочтения", on_click=open_political), 
-            ft.TextButton(text="Главное в людях", on_click=open_people),
-            ft.TextButton(text="Главное в жизни", on_click=open_life),
-            dropdown_sizes]), 
+                content=ft.Container(content = ft.Column(controls=[
+                dropdown_charts,ft.Text("Настроить пересечения интересов"), 
+                dropdown_sizes,
+                ft.TextButton(text="Политические предпочтения", on_click=open_political), 
+                ft.TextButton(text="Главное в людях", on_click=open_people),
+                ft.TextButton(text="Главное в жизни", on_click=open_life)]), 
             height=400, width=300),
             actions=[ft.TextButton("Done", on_click=close_settings), ft.TextButton("Delete card", on_click=delete_card)]
         )

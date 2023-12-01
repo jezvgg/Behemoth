@@ -25,8 +25,8 @@ class Card(ft.Container):
                 )
             ]
         )
-        self.width = size[0] * 400
-        self.height = size[1] * 400
+        self.width = size[0] * 400 + (size[0]-1)*10
+        self.height = size[1] * 400 + (size[1]-1)*10
         self.padding = 20
         self.border = ft.border.all(2, "#1A202A")
         self.border_radius=20
@@ -46,6 +46,7 @@ class NewCard(ft.Container):
     def __init__(self, add_card):
         super().__init__()
         self.content = ft.FloatingActionButton(icon=ft.icons.ADD, on_click=add_card, bgcolor="#11151C")
+        self.size = (1,1)
         self.width = 400
         self.height = 400
         self.padding = 20
