@@ -7,8 +7,11 @@ from venn._venn import *
 from venn._constants import *
 from functools import partial
 import matplotlib.pyplot as plt
+import matplotlib
 from flet.matplotlib_chart import MatplotlibChart
+from time import sleep
 
+matplotlib.use("svg")
 
 typesTitles = {'political': 'Политические предпочтения', 'people_main': 'Главное в людях',
                'life_main': 'Главное в жизни', 'sub': 'Главные интересы по подпискам',
@@ -106,8 +109,8 @@ def createBarChart(df, type, size:int = 1, use_axis: bool = True, **kwargs) -> f
 def createPieChart(df, type, space: bool = True, **kwargs) -> ft.PieChart:
 
     # ----- Стили для Hover -----
-    normal_radius = 60
-    hover_radius = 65
+    normal_radius = 65
+    hover_radius = 70
     normal_title_style = ft.TextStyle(
         size=16, color=ft.colors.WHITE, weight=ft.FontWeight.BOLD
     )
@@ -163,12 +166,12 @@ def createVennChartSmall(df, types: list, *args, **kwargs):
     for combo in getCombinatiosOfList(types):
         result['&'.join(combo)] = sum(prod([df[element].apply(lambda x: int(x)>0) for element in combo]))
 
-    # ----- Create PLT venn -----
-    fig, ax = plt.subplots(figsize=(7,7))
-
     plt.rcParams.update({"text.color": "white",
     'font.size':20,
     'font.weight':550})
+
+    # ----- Create PLT venn -----
+    fig, ax = plt.subplots()
 
     match len(types):
         case 2:

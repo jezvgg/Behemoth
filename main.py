@@ -114,6 +114,7 @@ def main(page: ft.Page):
 
         
         def delete_card(e):
+            print("Delete card")
             main_content.pop(i)
             settings.open = False
             page.update()
@@ -155,7 +156,7 @@ def main(page: ft.Page):
         open_settings(e, i)
         page.update()
         print("Settings open")
-        main_content
+        print(page.dialog)
 
         main_content[i] = Card(
             label='Политические предпочтения',
