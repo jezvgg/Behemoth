@@ -7,7 +7,7 @@ class Card(ft.Container):
     size = None
     
     def __init__(self, label: str, chart, size, open_settings, *args, **kwargs):
-        super().__init__()
+        super().__init__(**kwargs)
         self.label = label
         self.chart = chart
         self.size = size
@@ -33,7 +33,7 @@ class Card(ft.Container):
 
 
     def __str__(self):
-        return f'MyCard({self.label}, {self.chart}, {self.size})'
+        return f'MyCard({self.label}, {self.chart}, {self.size}) at ({self.right}, {self.top})'
 
 
     def __repr__(self):

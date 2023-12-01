@@ -65,3 +65,22 @@ dropdown_interests = ft.Dropdown(
     width=300,
     options=[]
 )
+
+dropdown_sizes = ft.Dropdown(
+    value="1 х 1",
+    label="Размер карточки",
+    width=300,
+    options={
+        ft.dropdown.Option("1 х 1"),
+        ft.dropdown.Option("1 х 2"),
+        ft.dropdown.Option("2 х 1"),
+        ft.dropdown.Option("2 х 2")
+    }
+)
+
+sizes_values = {
+    "1 х 1":(1,1),
+    "1 х 2":(1,2),
+    "2 х 1":(2,1),
+    "2 х 2":(2,2)
+}

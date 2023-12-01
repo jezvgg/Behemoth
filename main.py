@@ -21,7 +21,7 @@ def main(page: ft.Page):
 
     data = analyze()
     
-    main_content = MyGrid(size=(4,4), spacing=5, expand=True)
+    main_content = MyGrid(size=(4,4), spacing=10, expand=True)
 
     page.add(main_content)
 
@@ -35,7 +35,7 @@ def main(page: ft.Page):
             chart = dropdown_charts.value
             main_content[i] = Card(label=chart, 
             chart=createChart(createChoicesOfDataFrame(data, types), dropdown_options[chart], use_axis=axis_check.value, types=interests),
-            size=(1,1),
+            size=sizes_values[dropdown_sizes.value],
             open_settings=lambda x: open_settings(x, i))
             page.update()
 
@@ -97,7 +97,7 @@ def main(page: ft.Page):
             page.update()
 
         def on_change(e):
-            settings.content.content.controls = settings.content.content.controls[:5]
+            settings.content.content.controls = settings.content.content.controls[:6]
             match dropdown_options[dropdown_charts.value]:
                 case 'political' | 'people_main' | "life_main":
                     settings.content.content.controls.append(axis_check)
@@ -130,7 +130,8 @@ def main(page: ft.Page):
             content=ft.Container(content = ft.Column(controls=[dropdown_charts,ft.Text("Настроить пересечения интересов"), 
             ft.TextButton(text="Политические предпочтения", on_click=open_political), 
             ft.TextButton(text="Главное в людях", on_click=open_people),
-            ft.TextButton(text="Главное в жизни", on_click=open_life)]), 
+            ft.TextButton(text="Главное в жизни", on_click=open_life),
+            dropdown_sizes]), 
             height=400, width=300),
             actions=[ft.TextButton("Done", on_click=close_settings), ft.TextButton("Delete card", on_click=delete_card)]
         )
@@ -142,7 +143,7 @@ def main(page: ft.Page):
 
     def add_card(e):
 
-        i = len(main_content.cards)-1
+        i = len(main_content)-1
 
         open_settings(e, i)
 

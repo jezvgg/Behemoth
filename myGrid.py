@@ -8,66 +8,59 @@ class MyGrid(ft.Container):
     size = (4,4)
     curr_row = 0
     curr_elem = 0
+    spacing = 0
     space = []
-    cards = []
+    positions = []
+    lenght = 0
     
     def __init__(self, size: tuple[int, int], spacing: int, **kwargs):
-        self.size = size
         super().__init__(**kwargs)
-        self.content = ft.Column(
-            controls=[ft.Row(spacing=spacing, height=400) for _ in range(size[0])],
-            expand=True,
-            scroll=ft.ScrollMode.ALWAYS
-        )
+        self.size = size
+        self.spacing = spacing
+
+        self.content = ft.Stack(width=size[0]*400+(size[0]+1)*self.spacing,
+        height=size[1]*400+(size[1]+1)*self.spacing)
         self.space = [[0]*size[0] for _ in range(size[1])]
 
 
     def append(self, elem: Card | NewCard):
-        self.cards.append(elem)
-        self.content.controls[self.curr_row].controls.append(self.cards[-1])
-        self.space[self.curr_row][self.curr_elem] = len(self.cards)
+        elem.left = self.curr_elem*400 + abs(self.curr_elem+1)*self.spacing
+        elem.top = self.curr_row*400 + abs(self.curr_row+1)*self.spacing
+        self.content.controls.append(elem)
+
+        self.space[self.curr_row][self.curr_elem] = self.lenght+1
+
         self.curr_row += (self.curr_elem+1)//self.size[0]
         self.curr_elem = (self.curr_elem+1)%self.size[0]
-        print(self.space)
+
+        self.lenght += 1
 
 
     def __getitem__(self, key: int) -> Card | NewCard:
-        return self.cards[key]
+        return self.content.controls[key]
 
 
     def __setitem__(self, key: int, value: Card | NewCard):
-        self.cards[key] = value
-        self.update()
+        value.left = self[key].left
+        value.top = self[key].top
+        self.content.controls[key] = value
 
 
-    def pop(self, i: int):
-        num = i + 1
-        print(num)
-        for i, row in enumerate(self.space):
-            if num not in row: continue
-            self.cards[num-1] = None
-            print(i, row.index(num))
-            self.__shrink(i, row.index(num))
-        self.update()
-        self.curr_elem-=1
-        if self.curr_elem<0:
-            self.curr_row -= 1
+    def __len__(self):
+        return self.lenght
+
+
+    def pop(self, i):
+        top = self.content.controls[i].top
+        left = self.content.controls[i].left
+        self.content.controls[i] = ft.Container(disabled=True, width=0, height=0, left=10, top=10)
+        for j in range(i+1, len(self.content.controls)):
+            ntop = self.content.controls[j].top
+            nleft = self.content.controls[j].left
+            self.content.controls[j].top = top
+            self.content.controls[j].left = left
+            top, left = ntop, nleft
+        if self.curr_elem-1<0:
             self.curr_elem = self.size[0]-1
-        print(self.space, self.cards)
-
-
-    def __shrink(self, i, j):
-        self.space[i] = self.space[i][:j]+self.space[i][j+1:] + [self.space[i+1][0]]
-        for ind in range(i+1,len(self.space)-1):
-            self.space[ind] = self.space[ind][1:] + [self.space[i+1][0]]
-        self.space[-1] = self.space[-1][1:] + [0]
-
-
-    def update(self):
-        for i,row in enumerate(self.space):
-            for j,elem in enumerate(row):
-                if elem==0: continue
-                if self.cards[elem-1] == None:
-                    self.content.controls[i].controls.pop(elem-1)
-                    break
-                self.content.controls[i].controls[j] = self.cards[elem-1]
+            self.curr_row -= 1
+        else: self.curr_elem -= 1
