@@ -3,6 +3,7 @@ from settings_inputs import *
 from vizualazing import analyze, createChart, createChoicesOfDataFrame
 from Card import Card, NewCard
 from myGrid import MyGrid
+from time import sleep
 
 
 def main(page: ft.Page):
@@ -26,6 +27,7 @@ def main(page: ft.Page):
     page.add(main_content)
 
     def open_settings(e, i):
+        sleep(0.1)
         # Сделать на выбор отображение оси X и Y 
         def close_settings(e):
             settings.open = False
@@ -33,13 +35,13 @@ def main(page: ft.Page):
             'people_main':[int(not check.value)*(i+1) for i,check in enumerate(pm_checkers) if not check.value],
             'life_main':[int(not check.value)*(i+1) for i,check in enumerate(lm_checkers) if not check.value]}
             chart = dropdown_charts.value
-            print(sizes_values[dropdown_sizes.value])
             main_content.resize(i, sizes_values[dropdown_sizes.value])
             main_content[i] = Card(label=chart, 
             chart=createChart(createChoicesOfDataFrame(data, types), dropdown_options[chart], use_axis=axis_check.value, types=interests),
             size=sizes_values[dropdown_sizes.value],
             open_settings=lambda x: open_settings(x, i))
             page.update()
+            print("Closed Settings")
 
         def open_political(e):
             def close_window(e):
@@ -121,11 +123,11 @@ def main(page: ft.Page):
             interests.append(dropdown_interests.value)
             on_change(e)
 
-
+        print("Point1")
         dropdown_charts.on_change=on_change
         interests = []
         dropdown_interests.options = [ft.dropdown.Option(type_) for type_ in sorted(data.columns[11:], key=lambda x: sum(data[x].apply(lambda x: int(x)>0)))]
-
+        print("Point2")
         settings = ft.AlertDialog(
             modal=True,
             title=ft.Text("Настройки"),
@@ -136,19 +138,24 @@ def main(page: ft.Page):
                 ft.TextButton(text="Главное в людях", on_click=open_people),
                 ft.TextButton(text="Главное в жизни", on_click=open_life)]), 
             height=400, width=300),
-            actions=[ft.TextButton("Done", on_click=close_settings), ft.TextButton("Delete card", on_click=delete_card)]
+            actions=[ft.TextButton("Done", on_click=close_settings), ft.TextButton("Delete card", on_click=delete_card)],
+            on_dismiss=lambda e: print("Modal dialog dismissed!")
         )
+        print("Point3")
         on_change(e)
-
-        page.add(settings)
+        print("Point4")
         settings.open = True
-        page.update()
+        page.add(settings)
+        print("Point5")
 
     def add_card(e):
 
         i = len(main_content)-1
 
         open_settings(e, i)
+        page.update()
+        print("Settings open")
+        main_content
 
         main_content[i] = Card(
             label='Политические предпочтения',

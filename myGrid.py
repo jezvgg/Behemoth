@@ -26,6 +26,10 @@ class MyGrid(ft.Container):
 
 
     def append(self, elem: Card | NewCard):
+        while self.space[self.curr_row][self.curr_elem]:
+            self.curr_row += (self.curr_elem+1)//self.size[0]
+            self.curr_elem = (self.curr_elem+1)%self.size[0]
+
         elem.left = self.curr_elem*400 + abs(self.curr_elem+1)*self.spacing
         elem.top = self.curr_row*400 + abs(self.curr_row+1)*self.spacing
         self.content.controls.append(elem)
@@ -34,10 +38,8 @@ class MyGrid(ft.Container):
             for j in range(self.curr_elem, self.curr_elem+elem.size[0]):
                 self.space[i][j] = self.lenght+1
 
-
-        while self.space[self.curr_row][self.curr_elem]:
-            self.curr_row += (self.curr_elem+1)//self.size[0]
-            self.curr_elem = (self.curr_elem+1)%self.size[0]
+        self.curr_row += (self.curr_elem+1)//self.size[0]
+        self.curr_elem = (self.curr_elem+1)%self.size[0]
 
         self.lenght += 1
 
@@ -53,26 +55,17 @@ class MyGrid(ft.Container):
 
 
     def resize(self, key: int, new_size: tuple[int, int]):
-        print(key+1)
         for i in range(len(self.space)):
-            print(self.space[i])
             if key+1 in self.space[i]:
                 row = i
                 elem = self.space[i].index(key+1)
                 break
-        print("pos: ", row, elem)
 
         for i in range(row, row+new_size[1]):
             for j in range(elem, elem+new_size[0]):
-                print("del: ", i, j)
                 if self.space[i][j] and (i, j) != (row, elem):
-                    print('del2')
                     self.content.controls[self.space[i][j]-1] = ft.Container(disabled=True, width=0, height=0, left=10, top=10)
                 self.space[i][j] = key+1
-
-        print(self.space)
-
-        print(self[key])
 
 
     def __len__(self):
