@@ -9,7 +9,8 @@ from functools import partial
 import matplotlib.pyplot as plt
 import matplotlib
 from flet.matplotlib_chart import MatplotlibChart
-from time import sleep
+import flet.canvas as cv
+
 
 matplotlib.use("svg")
 
@@ -158,6 +159,38 @@ def createPieChart(df, type, space: bool = True, **kwargs) -> ft.PieChart:
     return chart
 
 
+def createVennChart(df, types: list, width: int, height: int, *args, **kwargs):
+
+    df = df.copy()
+
+    result = {}
+    for combo in getCombinatiosOfList(types):
+        result['&'.join(combo)] = sum(prod([df[element].apply(lambda x: int(x)>0) for element in combo]))
+
+    center_x = width//2
+    center_y = height//2
+
+    circle1 = cv.Circle(center_x-center_x//4,center_y,width//4, paint=ft.Paint(color=ft.colors.RED, style=ft.PaintingStyle.FILL))
+    circle2 = cv.Circle(center_x+center_x//4,center_y,width//4, paint=ft.Paint(color=ft.colors.BLUE, style=ft.PaintingStyle.FILL))
+
+    chart = ft.Stack([
+        cv.Canvas(expand=True, shapes=[circle1], opacity=0.6),
+        cv.Canvas(expand=True, shapes=[circle2], opacity=0.6),
+        cv.Canvas(expand=True, shapes=[
+            cv.Text(center_x-center_x*0.6,center_y-center_y//2, types[0], alignment=ft.alignment.bottom_center,style=ft.TextStyle(weight=ft.FontWeight.W_500, color=ft.colors.WHITE, size=20)),
+            cv.Text(center_x+center_x*0.6,center_y-center_y//2, types[1], alignment=ft.alignment.bottom_center, style=ft.TextStyle(weight=ft.FontWeight.W_500, color=ft.colors.WHITE, size=20)),
+            cv.Text(center_x-center_x//2,center_y+8, result[types[0]],alignment=ft.alignment.bottom_center, style=ft.TextStyle(size=16, color=ft.colors.WHITE)),
+            cv.Text(center_x+center_x//2,center_y+8, result[types[1]],alignment=ft.alignment.bottom_center, style=ft.TextStyle(size=16, color=ft.colors.WHITE)),
+            cv.Text(center_x,center_y+8, result[f'{types[0]}&{types[1]}'],alignment=ft.alignment.bottom_center, style=ft.TextStyle(size=16, color=ft.colors.WHITE))
+        ])
+    ],
+    right=0,
+    width=width-15,
+    height=height-15)
+
+    return chart
+
+
 def createVennChartSmall(df, types: list, *args, **kwargs):
     df = df.copy()
 
@@ -180,7 +213,7 @@ def createVennChartSmall(df, types: list, *args, **kwargs):
             svenn.venn3(subsets=list(result.values()), set_labels=types)
         case _:
             raise Exception("types invalid!")
-
+    print(fig)
     return MatplotlibChart(figure=fig, transparent=True, expand=True)
 
 
@@ -241,6 +274,8 @@ def createChart(df, type, types: None, *args, **kwargs):
         case 'politicalPie' | 'people_mainPie' | "life_mainPie" | "sexPie":
             return createPieChart(df, type[:-3], *args, **kwargs)
         case 'interests':
+            if len(types)==2:
+                return createVennChart(df, types, width=400, height=400)
             if len(types)<4:
                 return createVennChartSmall(df, types)
             else:

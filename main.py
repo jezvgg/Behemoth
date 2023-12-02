@@ -41,6 +41,8 @@ def main(page: ft.Page):
             size=sizes_values[dropdown_sizes.value],
             open_settings=lambda x: open_settings(x, i))
             page.update()
+            dropdown_charts.value = 'Политика (столбцы)'
+            dropdown_sizes.value = '1 х 1'
             print("Closed Settings")
 
         def open_political(e):

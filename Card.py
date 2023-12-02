@@ -27,7 +27,7 @@ class Card(ft.Container):
         )
         self.width = size[0] * 400 + (size[0]-1)*10
         self.height = size[1] * 400 + (size[1]-1)*10
-        self.padding = 20
+        self.padding = 15
         self.border = ft.border.all(2, "#1A202A")
         self.border_radius=20
 
