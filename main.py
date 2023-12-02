@@ -27,8 +27,8 @@ def main(page: ft.Page):
     page.add(main_content)
 
     def open_settings(e, i):
-        sleep(0.1)
-        # Сделать на выбор отображение оси X и Y 
+        print("Open settings")
+
         def close_settings(e):
             settings.open = False
             types = {'political':[int(not check.value)*(i+1) for i,check in enumerate(p_checkers) if not check.value],
@@ -43,6 +43,8 @@ def main(page: ft.Page):
             page.update()
             dropdown_charts.value = 'Политика (столбцы)'
             dropdown_sizes.value = '1 х 1'
+            dropdown_interests.value = 'Юмор'
+            settings.content.content.controls = settings.content.content.controls[:6]
             print("Closed Settings")
 
         def open_political(e):
@@ -103,15 +105,19 @@ def main(page: ft.Page):
             page.update()
 
         def on_change(e):
+            print("Changed")
             settings.content.content.controls = settings.content.content.controls[:6]
             match dropdown_options[dropdown_charts.value]:
                 case 'political' | 'people_main' | "life_main":
                     settings.content.content.controls.append(axis_check)
                 case 'interests':
+                    print('interests')         
                     settings.content.content.controls.append(dropdown_interests)
-                    settings.content.content.controls.append(ft.OutlinedButton(text="Добавить", on_click=add_interest))
+                    settings.content.content.controls.append(append_button)
                     for label in interests:
                         settings.content.content.controls.append(ft.Text(f'Добавлено: {label}', size=10))
+                    page.update()
+            print(settings.content.content.controls)
             page.update()
 
         
@@ -124,13 +130,15 @@ def main(page: ft.Page):
 
         def add_interest(e):
             interests.append(dropdown_interests.value)
+            sleep(0.02)
             on_change(e)
 
-        print("Point1")
+
         dropdown_charts.on_change=on_change
         interests = []
-        dropdown_interests.options = [ft.dropdown.Option(type_) for type_ in sorted(data.columns[11:], key=lambda x: sum(data[x].apply(lambda x: int(x)>0)))]
-        print("Point2")
+        dropdown_interests.options = dropdown_interests.options = [ft.dropdown.Option(type_) for type_ in sorted(data.columns[11:], key=lambda x: sum(data[x].apply(lambda x: int(x)>0)))]
+        dropdown_interests.value = 'Юмор'
+        append_button.on_click=add_interest
         settings = ft.AlertDialog(
             modal=True,
             title=ft.Text("Настройки"),
@@ -142,26 +150,20 @@ def main(page: ft.Page):
                 ft.TextButton(text="Главное в жизни", on_click=open_life)]), 
             height=400, width=300),
             actions=[ft.TextButton("Done", on_click=close_settings), ft.TextButton("Delete card", on_click=delete_card)],
-            on_dismiss=lambda e: print("Modal dialog dismissed!")
+            on_dismiss=lambda _: print("Dismiss")
         )
-        print("Point3")
         on_change(e)
-        print("Point4")
         settings.open = True
         page.add(settings)
-        print("Point5")
 
     def add_card(e):
 
         i = len(main_content)-1
 
         open_settings(e, i)
-        page.update()
-        print("Settings open")
-        print(page.dialog)
 
         main_content[i] = Card(
-            label='Политические предпочтения',
+            label='Политика (столбцы)',
             chart=createChart(data, 'political', ['political']),
             size=(1,1),
             open_settings=lambda x: open_settings(x,i)

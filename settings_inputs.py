@@ -66,6 +66,8 @@ dropdown_interests = ft.Dropdown(
     options=[]
 )
 
+append_button = ft.OutlinedButton(text="Добавить")
+
 dropdown_sizes = ft.Dropdown(
     value="1 х 1",
     label="Размер карточки",
