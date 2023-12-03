@@ -27,7 +27,6 @@ def main(page: ft.Page):
     page.add(main_content)
 
     def open_settings(e, i):
-        print("Open settings")
 
         def close_settings(e):
             settings.open = False
@@ -45,7 +44,7 @@ def main(page: ft.Page):
             dropdown_sizes.value = '1 х 1'
             dropdown_interests.value = 'Юмор'
             settings.content.content.controls = settings.content.content.controls[:6]
-            print("Closed Settings")
+
 
         def open_political(e):
             def close_window(e):
@@ -66,6 +65,7 @@ def main(page: ft.Page):
             window.open = True
             page.update()
 
+
         def open_people(e):
             def close_window(e):
                 window.open = False
@@ -84,6 +84,7 @@ def main(page: ft.Page):
             page.add(window)
             window.open = True
             page.update()
+
 
         def open_life(e):
             def close_window(e):
@@ -104,25 +105,22 @@ def main(page: ft.Page):
             window.open = True
             page.update()
 
+
         def on_change(e):
-            print("Changed")
             settings.content.content.controls = settings.content.content.controls[:6]
             match dropdown_options[dropdown_charts.value]:
                 case 'political' | 'people_main' | "life_main":
                     settings.content.content.controls.append(axis_check)
-                case 'interests':
-                    print('interests')         
+                case 'interests':        
                     settings.content.content.controls.append(dropdown_interests)
                     settings.content.content.controls.append(append_button)
                     for label in interests:
                         settings.content.content.controls.append(ft.Text(f'Добавлено: {label}', size=10))
                     page.update()
-            print(settings.content.content.controls)
             page.update()
 
         
         def delete_card(e):
-            print("Delete card")
             main_content.pop(i)
             settings.open = False
             page.update()
