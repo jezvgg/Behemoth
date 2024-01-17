@@ -4,7 +4,7 @@ from Card import Card, NewCard
 
 # Сделать двойную индексацию
 # Не работает pop
-class MyGrid(ft.Container):
+class FlexGrid(ft.Container):
     size = (4,4)
     curr_row = 0
     curr_elem = 0

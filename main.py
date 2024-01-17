@@ -2,30 +2,36 @@ import flet as ft
 from settings_inputs import *
 from vizualazing import analyze, createChart, createChoicesOfDataFrame
 from Card import Card, NewCard
-from myGrid import MyGrid
+from myGrid import FlexGrid
 from time import sleep
 
 
+MAIN_COLOR = "#3366CC"
+BG_COLOR = "#11151C"
+SECONARY_BG_COLOR = "#1A202A"
+SECONARY_COLOR = "#212D40"
+CONTRAST_COLOR = "#D66853"
+
+
 def main(page: ft.Page):
-    MAIN_COLOR = "#3366CC"
-    BG_COLOR = "#11151C"
-    SECONARY_BG_COLOR = "#1A202A"
-    SECONARY_COLOR = "#212D40"
-    CONTRAST_COLOR = "#D66853"
     page.title = "Behemoth"
     page.bgcolor = BG_COLOR
+
     header = ft.AppBar(toolbar_height=75, 
                        bgcolor=SECONARY_BG_COLOR,
                        title=ft.Text(value="Behemoth", size=36, weight=ft.FontWeight.W_600))
     page.appbar = header
     page.update()
 
+    # Переписать data, чтоб не сохраняла csv а сразу передавала DataFrame
     data = analyze()
     
-    main_content = MyGrid(size=(4,4), spacing=10, expand=True)
+    # Переписать FlexGrid на любой размер экрана без заданных конекретных размеров
+    main_content = FlexGrid(size=(4,4), spacing=10, expand=True)
 
     page.add(main_content)
 
+    # Вынести все настройки в GridCard
     def open_settings(e, i):
 
         def close_settings(e):
@@ -137,6 +143,8 @@ def main(page: ft.Page):
         dropdown_interests.options = dropdown_interests.options = [ft.dropdown.Option(type_) for type_ in sorted(data.columns[11:], key=lambda x: sum(data[x].apply(lambda x: int(x)>0)))]
         dropdown_interests.value = 'Юмор'
         append_button.on_click=add_interest
+
+        # Вот это вынести в GridCard
         settings = ft.AlertDialog(
             modal=True,
             title=ft.Text("Настройки"),
@@ -160,6 +168,7 @@ def main(page: ft.Page):
 
         open_settings(e, i)
 
+        # Переписать Card
         main_content[i] = Card(
             label='Политика (столбцы)',
             chart=createChart(data, 'political', ['political']),
