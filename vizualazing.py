@@ -11,6 +11,7 @@ import matplotlib
 from flet.matplotlib_chart import MatplotlibChart
 import flet.canvas as cv
 import math
+from settings import *
 
 
 matplotlib.use("svg")
@@ -311,7 +312,7 @@ def createVennChartMedium(df, types: list, *args, **kwargs):
 
 
 def createChart(df, type, types: None, *args, **kwargs):
-    match type:
+    match dropdown_options[type]:
         case 'political' | 'people_main' | "life_main":
             return createBarChart(df, type, *args, **kwargs)
         case 'politicalPie' | 'people_mainPie' | "life_mainPie" | "sexPie":

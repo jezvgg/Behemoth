@@ -1,5 +1,5 @@
 import flet as ft
-from settings_inputs import *
+from settings import *
 from vizualazing import analyze, createChart, createChoicesOfDataFrame
 from Card import Card, NewCard
 from myGrid import FlexGrid
