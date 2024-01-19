@@ -82,6 +82,7 @@ class GridCard(ft.Container):
         self.content = ft.FloatingActionButton(icon=ft.icons.ADD, on_click=self.create_card, bgcolor="#11151C")
 
 
+    # В визуализации нужно баги исправить
     def create_card(self, e: ft.ControlEvent):
         self.settings.fopen()
 
