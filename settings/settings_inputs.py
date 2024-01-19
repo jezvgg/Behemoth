@@ -1,5 +1,7 @@
 import flet as ft
 
+# Перенести в json
+
 p_check1 = ft.Checkbox(label="коммунистические", value=True)
 p_check2 = ft.Checkbox(label="социалистические", value=True)
 p_check3 = ft.Checkbox(label="умеренные", value=True)
