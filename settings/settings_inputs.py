@@ -1,7 +1,5 @@
 import flet as ft
 
-# Перенести в json
-
 p_check1 = ft.Checkbox(label="коммунистические", value=True)
 p_check2 = ft.Checkbox(label="социалистические", value=True)
 p_check3 = ft.Checkbox(label="умеренные", value=True)
@@ -50,15 +48,6 @@ dropdown_charts = ft.Dropdown(
             ]
         )
 
-dropdown_options = {"Политика (столбцы)":'political',
-"Главное в людях (столбцы)":"people_main",
-"Главное в жизни (столбцы)":"life_main",
-"Политика (пирог)":"politicalPie",
-"Главное в людях (пирог)":"people_mainPie",
-"Главное в жизни (пирог)":"life_mainPie",
-"Пол":"sexPie",
-"Интересы":"interests"}
-
 axis_check = ft.Checkbox(label="Отобразить оси", value=True)
 
 dropdown_interests = ft.Dropdown(
@@ -67,8 +56,6 @@ dropdown_interests = ft.Dropdown(
     width=300,
     options=[]
 )
-
-append_button = ft.OutlinedButton(text="Добавить")
 
 dropdown_sizes = ft.Dropdown(
     value="1 х 1",
