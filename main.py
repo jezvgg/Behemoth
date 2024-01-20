@@ -24,7 +24,9 @@ def main(page: ft.Page):
     page.analyze = data
     
     content = ft.Container(
-                content=GridCard(page)
+                content=ft.Row(
+                            controls = [GridCard(page), GridCard(page)]
+                            )
                 )
     page.add(content)
 

@@ -70,9 +70,9 @@ class GridCard(ft.Container):
                         dropdown_charts,
                         dropdown_sizes,
                         ft.Text('Настроить пересечения интересов:'),
-                        ft.TextButton(text=self.political_settings.title, on_click=self.political_settings.fopen),
-                        ft.TextButton(text=self.people_settings.title, on_click=self.people_settings.fopen),
-                        ft.TextButton(text=self.life_settings.title, on_click=self.life_settings.fopen)
+                        ft.TextButton(text=self.political_settings._title, on_click=self.political_settings.fopen),
+                        ft.TextButton(text=self.people_settings._title, on_click=self.people_settings.fopen),
+                        ft.TextButton(text=self.life_settings._title, on_click=self.life_settings.fopen)
                     ]
                 ), height=400, width=300
             )
@@ -86,7 +86,7 @@ class GridCard(ft.Container):
     def create_card(self, e: ft.ControlEvent):
         self.settings.fopen()
 
-        while self.settings.open == True: continue
+        while any([self.settings.open, self.life_settings.open, self.people_settings.open, self.political_settings.open]): continue
 
         self.content = ft.Stack(
             controls = [
