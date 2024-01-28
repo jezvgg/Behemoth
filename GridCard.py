@@ -49,8 +49,6 @@ class GridCard(ft.Container):
         )
         self.page.add(self.people_settings)
 
-        print(inputs['lm_checkers'])
-
         self.life_settings = Settings(
             page=page,
             title="Главное в жизни",
@@ -70,8 +68,8 @@ class GridCard(ft.Container):
             content = ft.Container(
                 content = ft.Column(
                     controls=[
-                        dropdown_charts,
-                        dropdown_sizes,
+                        inputs['dropdown_charts'][0],
+                        inputs['dropdown_sizes'][0],
                         ft.Text('Настроить пересечения интересов:'),
                         ft.TextButton(text=self.political_settings._title, on_click=self.political_settings.fopen),
                         ft.TextButton(text=self.people_settings._title, on_click=self.people_settings.fopen),
@@ -80,6 +78,7 @@ class GridCard(ft.Container):
                 ), height=400, width=300
             )
         )
+        print(inputs['dropdown_charts'][0])
         self.page.add(self.settings)
 
         self.content = ft.FloatingActionButton(icon=ft.icons.ADD, on_click=self.create_card, bgcolor="#11151C")

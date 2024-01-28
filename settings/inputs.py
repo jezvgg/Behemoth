@@ -17,12 +17,12 @@ class Inputs:
             self.json = f.read()
 
 
-    def __getitem__(self, input_name: str):
+    def __getitem__(self, input_name: str) -> list:
         inputs_json = json.loads(self.json)
         if input_name not in inputs_json.keys(): 
             raise KeyError("Таких инпутов в json нет!")
 
-        return self.unserialize(inputs_json[input_name])
+        return [eval(f'ft.{elem["class"]}({self.__get_kwargs(elem["kwargs"])})') for elem in inputs_json[input_name]]
 
 
     def __get_kwargs(self, kwargs: dict):
@@ -32,17 +32,11 @@ class Inputs:
                 case str(): 
                     result.append(f'{key}="{item}"')
                 case list():
-                    print(f'{key}={self.unserialize(item)}')
-                    result.append(f'{key}={self.unserialize(item)}')
+                    result.append(f"{key}=[{', '.join([f'''ft.{elem['class']}({self.__get_kwargs(elem['kwargs'])})''' for elem in item])}]")
                 case _: 
                     result.append(f'{key}={item}')
 
         return ', '.join(result)
-
-
-    def unserialize(self, args: list):
-        # print([f'ft.{elem["class"]}({self.__get_kwargs(elem["kwargs"])})' for elem in args])
-        return [eval(f'ft.{elem["class"]}({self.__get_kwargs(elem["kwargs"])})') for elem in args]
 
 
 inputs = Inputs()
