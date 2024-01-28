@@ -1,6 +1,7 @@
 import flet as  ft
 from settings.settings_class import Settings
-from settings.settings_inputs import *
+from settings.inputs import inputs
+from settings.settings_inputs import dropdown_charts, dropdown_sizes
 from vizualazing import createChart
 
 
@@ -29,7 +30,7 @@ class GridCard(ft.Container):
             title="Политические предпочтения",
             content=ft.Container(
                 content = ft.Column(
-                    controls = p_checkers,
+                    controls = inputs['p_checkers'],
                     height=400
                 )
             )
@@ -41,19 +42,21 @@ class GridCard(ft.Container):
             title="Главное в людях",
             content=ft.Container(
                 content = ft.Column(
-                    controls = pm_checkers,
+                    controls = inputs['pm_checkers'],
                     height=400
                 )
             )
         )
         self.page.add(self.people_settings)
 
+        print(inputs['lm_checkers'])
+
         self.life_settings = Settings(
             page=page,
             title="Главное в жизни",
             content=ft.Container(
                 content = ft.Column(
-                    controls = lm_checkers,
+                    controls = inputs['lm_checkers'],
                     height=400
                 )
             )

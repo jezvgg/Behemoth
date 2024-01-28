@@ -1,0 +1,282 @@
+{
+    "p_checkers":[
+        {
+            "class":"Checkbox",
+            "kwargs":{
+                "label":"коммунистические",
+                "value":true
+            }
+        },
+        {
+            "class":"Checkbox",
+            "kwargs":{
+                "label":"социалистические",
+                "value":true
+            }
+        },
+        {
+            "class":"Checkbox",
+            "kwargs":{
+                "label":"умеренные",
+                "value":true
+            }
+        },
+        {
+            "class":"Checkbox",
+            "kwargs":{
+                "label":"либеральные",
+                "value":true
+            }
+        },
+        {
+            "class":"Checkbox",
+            "kwargs":{
+                "label":"консервативные",
+                "value":true
+            }
+        },
+        {
+            "class":"Checkbox",
+            "kwargs":{
+                "label":"монархические",
+                "value":true
+            }
+        },
+        {
+            "class":"Checkbox",
+            "kwargs":{
+                "label":"ультраконсервативные",
+                "value":true
+            }
+        },
+        {
+            "class":"Checkbox",
+            "kwargs":{
+                "label":"индифферентные",
+                "value":true
+            }
+        },
+        {
+            "class":"Checkbox",
+            "kwargs":{
+                "label":"либертарианские",
+                "value":true
+            }
+        }
+    ],
+    "pm_checkers":[
+        {
+            "class":"Checkbox",
+            "kwargs":{
+                "label":"ум и креативность",
+                "value":true
+            }
+        },
+        {
+            "class":"Checkbox",
+            "kwargs":{
+                "label":"доброта и честность",
+                "value":true
+            }
+        },
+        {
+            "class":"Checkbox",
+            "kwargs":{
+                "label":"красота и здоровье",
+                "value":true
+            }
+        },
+        {
+            "class":"Checkbox",
+            "kwargs":{
+                "label":"власть и богатсво",
+                "value":true
+            }
+        },
+        {
+            "class":"Checkbox",
+            "kwargs":{
+                "label":"смелость и упорство",
+                "value":true
+            }
+        },
+        {
+            "class":"Checkbox",
+            "kwargs":{
+                "label":"юмор и жизнелюбие",
+                "value":true
+            }
+        }
+    ],
+    "lm_checkers":[
+        {
+            "class":"Checkbox",
+            "kwargs":{
+                "label":"семья и дети",
+                "value":true
+            }
+        },
+        {
+            "class":"Checkbox",
+            "kwargs":{
+                "label":"карьера и деньги",
+                "value":true
+            }
+        },
+        {
+            "class":"Checkbox",
+            "kwargs":{
+                "label":"развлечения и отдых",
+                "value":true
+            }
+        },
+        {
+            "class":"Checkbox",
+            "kwargs":{
+                "label":"наука и исследования",
+                "value":true
+            }
+        },
+        {
+            "class":"Checkbox",
+            "kwargs":{
+                "label":"совершенствование мира",
+                "value":true
+            }
+        },
+        {
+            "class":"Checkbox",
+            "kwargs":{
+                "label":"саморазвитие",
+                "value":true
+            }
+        },
+        {
+            "class":"Checkbox",
+            "kwargs":{
+                "label":"красота и искусство",
+                "value":true
+            }
+        },
+        {
+            "class":"Checkbox",
+            "kwargs":{
+                "label":"слава и влияние",
+                "value":true
+            }
+        }
+    ],
+    "dropdown_charts": [
+        {
+            "class":"Dropdown",
+            "kwargs":{
+                "value":"Политика (столбцы)",
+                "label":"Выбор графика",
+                "width":300,
+                "options":[
+                    {
+                        "class":"dropdown.Option",
+                        "kwargs":{
+                            "text":"Политика (столбцы)"
+                        }
+                    },
+                    {
+                        "class":"dropdown.Option",
+                        "kwargs":{
+                            "text":"Главное в людях (столбцы)"
+                        }
+                    },
+                    {
+                        "class":"dropdown.Option",
+                        "kwargs":{
+                            "text":"Главное в жизни (столбцы)"
+                        }
+                    },
+                    {
+                        "class":"dropdown.Option",
+                        "kwargs":{
+                            "text":"Политика (пирог)"
+                        }
+                    },
+                    {
+                        "class":"dropdown.Option",
+                        "kwargs":{
+                            "text":"Главное в людях (пирог)"
+                        }
+                    },
+                    {
+                        "class":"dropdown.Option",
+                        "kwargs":{
+                            "text":"Главное в жизни (пирог)"
+                        }
+                    },
+                    {
+                        "class":"dropdown.Option",
+                        "kwargs":{
+                            "text":"Пол"
+                        }
+                    },
+                    {
+                        "class":"dropdown.Option",
+                        "kwargs":{
+                            "text":"Интересы"
+                        }
+                    }
+                ]
+            }
+        }
+    ],
+    "axis_check":[
+        {
+            "class":"Checkbox",
+            "kwargs":{
+                "label":"Отобразить оси",
+                "value": true
+            }
+        }
+    ],
+    "dropdown_interests": [
+        {
+            "class":"Dropdown",
+            "kwargs": {
+                "label":"Добавление интересов",
+                "width": 300
+            }
+        }
+    ],
+    "dropdown_sizes":[
+        {
+            "class":"Dropdown",
+            "kwargs": {
+                "value": "1 x 1",
+                "width":300,
+                "options":[
+                    {
+                        "class":"dropdown.Option",
+                        "kwargs":{
+                            "text":"1 x 1"
+                        }
+                    },
+                    {
+                        "class":"dropdown.Option",
+                        "kwargs":{
+                            "text":"1 x 2"
+                        }
+                    },
+                    {
+                        "class":"dropdown.Option",
+                        "kwargs":{
+                            "text":"2 x 1"
+                        }
+                    },
+                    {
+                        "class":"dropdown.Option",
+                        "kwargs":{
+                            "text":"2 x 2"
+                        }
+                    }
+                ]
+            }
+        }
+    ]
+}

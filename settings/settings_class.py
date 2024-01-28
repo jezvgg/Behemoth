@@ -23,7 +23,7 @@ class Settings(ft.AlertDialog):
 
     def close(self, e:ft.ControlEvent = None):
         self.open = False
-        sleep(0.1)
+        sleep(1)
         self.page.dialog = self.last_dialog
         self.page.update()
 
