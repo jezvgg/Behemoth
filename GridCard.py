@@ -35,7 +35,6 @@ class GridCard(ft.Container):
                 )
             )
         )
-        self.page.add(self.political_settings)
 
         self.people_settings = Settings(
             page=page,
@@ -47,7 +46,6 @@ class GridCard(ft.Container):
                 )
             )
         )
-        self.page.add(self.people_settings)
 
         self.life_settings = Settings(
             page=page,
@@ -59,9 +57,7 @@ class GridCard(ft.Container):
                 )
             )
         )
-        self.page.add(self.life_settings)
 
-        # Добавить удаление карточки
         self.settings = Settings(
             page=page,
             title = 'Настройки',
@@ -78,8 +74,6 @@ class GridCard(ft.Container):
                 ), height=400, width=300
             )
         )
-        print(inputs['dropdown_charts'][0])
-        self.page.add(self.settings)
 
         self.content = ft.FloatingActionButton(icon=ft.icons.ADD, on_click=self.create_card, bgcolor="#11151C")
 
@@ -88,12 +82,15 @@ class GridCard(ft.Container):
     def create_card(self, e: ft.ControlEvent):
         self.settings.fopen()
 
-        while any([self.settings.open, self.life_settings.open, self.people_settings.open, self.political_settings.open]): continue
+        while any([self.settings.content.open, 
+                   self.life_settings.content.open, 
+                   self.people_settings.content.open, 
+                   self.political_settings.content.open]): continue
 
         self.content = ft.Stack(
             controls = [
-                ft.Row([ft.Text(self.settings.content.content.controls[0].value, size=16)], top=11, left=30),
-                createChart(self.page.analyze, self.settings.content.content.controls[0].value),
+                ft.Row([ft.Text(self.settings.content.content.content.controls[0].value, size=16)], top=11, left=30),
+                createChart(self.page.analyze, self.settings.content.content.content.controls[0].value),
                 ft.IconButton(
                     icon = ft.icons.SETTINGS,
                     icon_color = "#212D40",
