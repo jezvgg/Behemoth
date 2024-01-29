@@ -1,4 +1,5 @@
 import flet as ft
+from pathlib import Path
 import json
 
 
@@ -9,20 +10,20 @@ class Inputs:
     Данные для инпутов хранятся в json файле.
     '''
 
-    json = None
+    inputs = None
 
 
-    def __init__(self, json_path = '/home/jezvgg/Projects/Behemoth/settings/inputs.json'):
+    def __init__(self, json_path: Path = Path(Path.cwd(), 'settings/inputs.json')):
         with open(json_path, 'r') as f:
-            self.json = f.read()
+            json_file = f.read()
+        self.inputs = json.loads(json_file)
 
 
     def __getitem__(self, input_name: str) -> list:
-        inputs_json = json.loads(self.json)
-        if input_name not in inputs_json.keys(): 
+        if input_name not in self.inputs.keys(): 
             raise KeyError("Таких инпутов в json нет!")
 
-        return [eval(f'ft.{elem["class"]}({self.__get_kwargs(elem["kwargs"])})') for elem in inputs_json[input_name]]
+        return [eval(f'ft.{elem["class"]}({self.__get_kwargs(elem["kwargs"])})') for elem in self.inputs[input_name]]
 
 
     def __get_kwargs(self, kwargs: dict):
