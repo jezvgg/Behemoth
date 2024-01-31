@@ -1,5 +1,5 @@
 import flet as ft
-from vizualazing import analyze, createChart, createChoicesOfDataFrame
+from vizualazing import analyze
 from GridCard import GridCard
 
 

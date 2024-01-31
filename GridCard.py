@@ -1,8 +1,7 @@
 import flet as  ft
 from settings.settings_class import Settings
 from settings.inputs import inputs
-from settings.settings_inputs import dropdown_charts, dropdown_sizes
-from vizualazing import createChart
+from vizualazing import createChart, createChoicesOfDataFrame
 
 
 class GridCard(ft.Container):
@@ -90,7 +89,7 @@ class GridCard(ft.Container):
         self.content = ft.Stack(
             controls = [
                 ft.Row([ft.Text(self.settings.content.content.content.controls[0].value, size=16)], top=11, left=30),
-                createChart(self.page.analyze, self.settings.content.content.content.controls[0].value),
+                createChart(createChoicesOfDataFrame(self.page.analyze, self.types), self.settings.content.content.content.controls[0].value),
                 ft.IconButton(
                     icon = ft.icons.SETTINGS,
                     icon_color = "#212D40",
@@ -102,4 +101,14 @@ class GridCard(ft.Container):
             ], expand=True
         )
         self.page.update()
+
+
+    @property
+    def types(self):
+        '''
+        Возращает значения чекбоксов для пересечения графиков.
+        '''
+        return {'political':[int(not check.value)*(i+1) for i,check in enumerate(self.political_settings.content.content.content.controls) if not check.value],
+                'people_main':[int(not check.value)*(i+1) for i,check in enumerate(self.people_settings.content.content.content.controls) if not check.value],
+                'life_main':[int(not check.value)*(i+1) for i,check in enumerate(self.life_settings.content.content.content.controls) if not check.value]}
 
