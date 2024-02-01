@@ -111,4 +111,4 @@ class GridCard(ft.Container):
         return {'political':[int(not check.value)*(i+1) for i,check in enumerate(self.political_settings.content.content.content.controls) if not check.value],
                 'people_main':[int(not check.value)*(i+1) for i,check in enumerate(self.people_settings.content.content.content.controls) if not check.value],
                 'life_main':[int(not check.value)*(i+1) for i,check in enumerate(self.life_settings.content.content.content.controls) if not check.value]}
-
+                

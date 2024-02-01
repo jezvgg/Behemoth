@@ -177,49 +177,57 @@
                     {
                         "class":"dropdown.Option",
                         "kwargs":{
-                            "text":"Политика (столбцы)"
+                            "text":"Политика (столбцы)",
+                            "key":"political"
                         }
                     },
                     {
                         "class":"dropdown.Option",
                         "kwargs":{
-                            "text":"Главное в людях (столбцы)"
+                            "text":"Главное в людях (столбцы)",
+                            "key":"people_main"
                         }
                     },
                     {
                         "class":"dropdown.Option",
                         "kwargs":{
-                            "text":"Главное в жизни (столбцы)"
+                            "text":"Главное в жизни (столбцы)",
+                            "key":"life_main"
                         }
                     },
                     {
                         "class":"dropdown.Option",
                         "kwargs":{
-                            "text":"Политика (пирог)"
+                            "text":"Политика (пирог)",
+                            "key":"politicalPie"
                         }
                     },
                     {
                         "class":"dropdown.Option",
                         "kwargs":{
-                            "text":"Главное в людях (пирог)"
+                            "text":"Главное в людях (пирог)",
+                            "key":"people_mainPie"
                         }
                     },
                     {
                         "class":"dropdown.Option",
                         "kwargs":{
-                            "text":"Главное в жизни (пирог)"
+                            "text":"Главное в жизни (пирог)",
+                            "key":"life_mainPie"
                         }
                     },
                     {
                         "class":"dropdown.Option",
                         "kwargs":{
-                            "text":"Пол"
+                            "text":"Пол",
+                            "key":"sexPie"
                         }
                     },
                     {
                         "class":"dropdown.Option",
                         "kwargs":{
-                            "text":"Интересы"
+                            "text":"Интересы",
+                            "key":"interests"
                         }
                     }
                 ]
