@@ -178,21 +178,21 @@
                         "class":"dropdown.Option",
                         "kwargs":{
                             "text":"Политика (столбцы)",
-                            "key":"political"
+                            "key":"politicalBar"
                         }
                     },
                     {
                         "class":"dropdown.Option",
                         "kwargs":{
                             "text":"Главное в людях (столбцы)",
-                            "key":"people_main"
+                            "key":"people_mainBar"
                         }
                     },
                     {
                         "class":"dropdown.Option",
                         "kwargs":{
                             "text":"Главное в жизни (столбцы)",
-                            "key":"life_main"
+                            "key":"life_mainBar"
                         }
                     },
                     {
