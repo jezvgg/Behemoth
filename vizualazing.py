@@ -11,7 +11,6 @@ import matplotlib
 from flet.matplotlib_chart import MatplotlibChart
 import flet.canvas as cv
 import math
-from settings.settings_inputs import *
 
 
 matplotlib.use("svg")
@@ -322,21 +321,21 @@ def createVennChartMedium(df, types: list, *args, **kwargs):
     return MatplotlibChart(figure=fig, transparent=True, expand=True)
 
 
-def createChart(df, type, types = None, *args, **kwargs):
-    match type:
-        case 'political' | 'people_main' | "life_main":
-            return createBarChart(df, type, *args, **kwargs)
-        case 'politicalPie' | 'people_mainPie' | "life_mainPie" | "sexPie":
-            return createPieChart(df, type[:-3], *args, **kwargs)
-        case 'interests':
-            if len(types)==2:
-                return createVennChart(df, types, width=400, height=400)
-            elif len(types)==3:
-                return createVennChart3(df, types, width=400, height=400)
-            elif len(types)<4:
-                return createVennChartSmall(df, types)
-            else:
-                return createVennChartMedium(df, types)
+def createChart(df:pd.DataFrame, type : str, types:list = None, *args, **kwargs):
+    print(type)
+    if type.endswith('Bar'):
+        return createBarChart(df, type[:-3], *args, **kwargs)
+    elif type.endswith('Pie'):
+        return createPieChart(df, type[:-3], *args, **kwargs)
+    elif type == 'interests':
+        if len(types)==2:
+            return createVennChart(df, types, width=400, height=400)
+        elif len(types)==3:
+            return createVennChart3(df, types, width=400, height=400)
+        elif len(types)<4:
+            return createVennChartSmall(df, types)
+        else:
+            return createVennChartMedium(df, types)
 
 def createChoicesOfDataFrame(df, choice: dict[str, list[int]]) -> pd.DataFrame:
     '''

@@ -1,5 +1,4 @@
 import flet as ft
-from Card import Card, NewCard
 
 
 # Сделать двойную индексацию

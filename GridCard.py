@@ -87,10 +87,15 @@ class GridCard(ft.Container):
                    self.people_settings.content.open, 
                    self.political_settings.content.open]): continue
 
+        key = self.settings.content.content.content.controls[0].value
+        name = list(filter(lambda x: x.key == key, self.settings.content.content.content.controls[0].options))[0].text
+
         self.content = ft.Stack(
             controls = [
-                ft.Row([ft.Text(self.settings.content.content.content.controls[0].value, size=16)], top=11, left=30),
-                createChart(createChoicesOfDataFrame(self.page.analyze, self.types), self.settings.content.content.content.controls[0].value, self.interests),
+                ft.Row([ft.Text(name, size=16)], top=11, left=30),
+                createChart(df=createChoicesOfDataFrame(self.page.analyze, self.types), 
+                            type=key, 
+                            types=self.interests),
                 ft.IconButton(
                     icon = ft.icons.SETTINGS,
                     icon_color = "#212D40",
