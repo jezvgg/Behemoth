@@ -10,15 +10,13 @@ import matplotlib.pyplot as plt
 import matplotlib
 from flet.matplotlib_chart import MatplotlibChart
 import flet.canvas as cv
+import numpy as np
 import math
 
 
 matplotlib.use("svg")
 
 
-typesTitles = {'political': 'Политические предпочтения', 'people_main': 'Главное в людях',
-               'life_main': 'Главное в жизни', 'sub': 'Главные интересы по подпискам',
-               'alcohol': 'Отношение к алкоголю', 'smoking': 'Отношение к курению'}
 
 tips = {'political': ["коммунистические", "социалистические", "умеренные", "либеральные",
                       "консервативные", "монархические", "ультраконсервативные", "индифферентные",
@@ -40,15 +38,6 @@ tips = {'political': ["коммунистические", "социалисти�
             "красота и искусство",
             "слава и влияние"],
         'sex': ["s - муж", "s - жен"]}
-
-dropdown_options = {"Политика (столбцы)":'political',
-"Главное в людях (столбцы)":"people_main",
-"Главное в жизни (столбцы)":"life_main",
-"Политика (пирог)":"politicalPie",
-"Главное в людях (пирог)":"people_mainPie",
-"Главное в жизни (пирог)":"life_mainPie",
-"Пол":"sexPie",
-"Интересы":"interests"}
 
 
 def getCombinatiosOfList(rawList):  # Делает все возможные комбинации длиной больше 1-го по списку
@@ -170,8 +159,34 @@ def createPieChart(df, type, space: bool = True, **kwargs) -> ft.PieChart:
 
     return chart
 
+def createVennChart(df:pd.DataFrame, types: list, width: int, height: int, collision:int=0.7, *agrs, **kwargs):
 
-def createVennChart(df, types: list, width: int, height: int, *args, **kwargs):
+    print(len(types)+1)
+    degrees = np.linspace(1, stop=360, num=len(types)+1)[:-1]
+    print(degrees)
+    for degree in degrees:
+        print(degree//90 + 1)
+
+    center_x = width//2
+    center_y = height//2
+    radius = min(center_x, center_y)//2
+
+    layers = []
+    for degree in degrees:
+        x = center_x + cos(math.radians(degree))*(radius*collision)
+        y = center_y + sin(math.radians(degree))*(radius*collision)
+        paint = ft.Paint(color=ft.colors.RED, style=ft.PaintingStyle.FILL)
+        layers.append(cv.Canvas(expand=True, shapes=[cv.Circle(x, y, radius, paint=paint)], opacity=0.6))
+
+    print(layers)
+    
+    return ft.Stack(controls=layers, 
+                    right=-7,
+                    width=width-15,
+                    height=height-15)
+
+
+def createVennChart2(df, types: list, width: int, height: int, *args, **kwargs):
 
     df = df.copy()
 
@@ -328,14 +343,7 @@ def createChart(df:pd.DataFrame, type : str, types:list = None, *args, **kwargs)
     elif type.endswith('Pie'):
         return createPieChart(df, type[:-3], *args, **kwargs)
     elif type == 'interests':
-        if len(types)==2:
-            return createVennChart(df, types, width=400, height=400)
-        elif len(types)==3:
-            return createVennChart3(df, types, width=400, height=400)
-        elif len(types)<4:
-            return createVennChartSmall(df, types)
-        else:
-            return createVennChartMedium(df, types)
+        return createVennChart(df, types=types, width=400, height=400, *args, **kwargs)
 
 def createChoicesOfDataFrame(df, choice: dict[str, list[int]]) -> pd.DataFrame:
     '''
@@ -359,4 +367,6 @@ def analyze(): # Создаёт датафрейм из CSV
 
 if __name__ == "__main__":
     data = analyze()
-    createVennChartMedium(data, ['Юмор', 'Футбол','Культура и искусство'])
+    createVennChart(data, types=['1','2'], width=400, height=400)
+    createVennChart(data, types=['1','2', '3'], width=400, height=400)
+    createVennChart(data, types=['1','2', '3', '4'], width=400, height=400)
