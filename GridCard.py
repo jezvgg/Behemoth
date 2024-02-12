@@ -106,8 +106,6 @@ class GridCard(ft.Container):
                 )
             ], expand=True
         )
-        print(self.content.controls[1])
-        print(self.content.controls[1].controls)
         self.page.update()
 
 
@@ -136,7 +134,6 @@ class GridCard(ft.Container):
 
     def add_interest(self, e):
         self.interests.append(self.settings.content.content.content.controls[-2].value)
-        print(self.interests)
         self.settings.content.content.content.controls[-1].controls.append(
             ft.Text(self.settings.content.content.content.controls[-2].value))
         self.page.update()
