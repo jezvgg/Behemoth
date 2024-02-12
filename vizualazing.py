@@ -1,18 +1,10 @@
 import pandas as pd
-from math import prod
+from math import prod, cos, sin
 from itertools import combinations
 import flet as ft
-import matplotlib_venn as svenn
-from venn._venn import *
-from venn._constants import *
-from functools import partial
-import matplotlib.pyplot as plt
-import matplotlib
-from flet.matplotlib_chart import MatplotlibChart
 import flet.canvas as cv
-import numpy as np
+from controls.VennChart import VennChart
 import math
-
 
 matplotlib.use("svg")
 
@@ -159,64 +151,6 @@ def createPieChart(df, type, space: bool = True, **kwargs) -> ft.PieChart:
 
     return chart
 
-def createVennChart(df:pd.DataFrame, types: list, width: int, height: int, collision:int=0.7, *agrs, **kwargs):
-
-    print(len(types)+1)
-    degrees = np.linspace(1, stop=360, num=len(types)+1)[:-1]
-    print(degrees)
-    for degree in degrees:
-        print(degree//90 + 1)
-
-    center_x = width//2
-    center_y = height//2
-    radius = min(center_x, center_y)//2
-
-    layers = []
-    for degree in degrees:
-        x = center_x + cos(math.radians(degree))*(radius*collision)
-        y = center_y + sin(math.radians(degree))*(radius*collision)
-        paint = ft.Paint(color=ft.colors.RED, style=ft.PaintingStyle.FILL)
-        layers.append(cv.Canvas(expand=True, shapes=[cv.Circle(x, y, radius, paint=paint)], opacity=0.6))
-
-    print(layers)
-    
-    return ft.Stack(controls=layers, 
-                    right=-7,
-                    width=width-15,
-                    height=height-15)
-
-
-def createVennChart2(df, types: list, width: int, height: int, *args, **kwargs):
-
-    df = df.copy()
-
-    result = {}
-    for combo in getCombinatiosOfList(types):
-        result['&'.join(combo)] = sum(prod([df[element].apply(lambda x: int(x)>0) for element in combo]))
-
-    center_x = width//2
-    center_y = height//2
-
-    circle1 = cv.Circle(center_x-center_x//4,center_y,width//4, paint=ft.Paint(color=ft.colors.RED, style=ft.PaintingStyle.FILL))
-    circle2 = cv.Circle(center_x+center_x//4,center_y,width//4, paint=ft.Paint(color=ft.colors.BLUE, style=ft.PaintingStyle.FILL))
-
-    chart = ft.Stack([
-        cv.Canvas(expand=True, shapes=[circle1], opacity=0.6),
-        cv.Canvas(expand=True, shapes=[circle2], opacity=0.6),
-        cv.Canvas(expand=True, shapes=[
-            cv.Text(center_x-center_x*0.6,center_y-center_y//2, types[0], alignment=ft.alignment.bottom_center,style=ft.TextStyle(weight=ft.FontWeight.W_500, color=ft.colors.WHITE, size=20)),
-            cv.Text(center_x+center_x*0.6,center_y-center_y//2, types[1], alignment=ft.alignment.bottom_center, style=ft.TextStyle(weight=ft.FontWeight.W_500, color=ft.colors.WHITE, size=20)),
-            cv.Text(center_x-center_x//2,center_y+8, result[types[0]],alignment=ft.alignment.bottom_center, style=ft.TextStyle(size=16, color=ft.colors.WHITE)),
-            cv.Text(center_x+center_x//2,center_y+8, result[types[1]],alignment=ft.alignment.bottom_center, style=ft.TextStyle(size=16, color=ft.colors.WHITE)),
-            cv.Text(center_x,center_y+8, result[f'{types[0]}&{types[1]}'],alignment=ft.alignment.bottom_center, style=ft.TextStyle(size=16, color=ft.colors.WHITE))
-        ])
-    ],
-    right=0,
-    width=width-15,
-    height=height-15)
-
-    return chart
-
 
 def createVennChart3(df, types: list, width: int, height: int, *args, **kwargs):
 
@@ -260,82 +194,6 @@ def createVennChart3(df, types: list, width: int, height: int, *args, **kwargs):
     return chart
 
 
-def createVennChartSmall(df, types: list, *args, **kwargs):
-    df = df.copy()
-
-    # ----- Collect data for venn -----
-    result = {}
-    for combo in getCombinatiosOfList(types):
-        result['&'.join(combo)] = sum(prod([df[element].apply(lambda x: int(x)>0) for element in combo]))
-
-    plt.rcParams.update({"text.color": "white",
-    'font.size':20,
-    'font.weight':550})
-
-    # ----- Create PLT venn -----
-    fig, ax = plt.subplots()
-
-    match len(types):
-        case 2:
-            svenn.venn2(subsets=list(result.values()), set_labels=types)
-        case 3:
-            svenn.venn3(subsets=list(result.values()), set_labels=types)
-        case _:
-            raise Exception("types invalid!")
-    print(fig)
-    return MatplotlibChart(figure=fig, transparent=True, expand=True)
-
-
-def draw_venn(*, petal_labels, dataset_labels, hint_hidden, colors, figsize, fontsize, legend_loc, ax):
-    """Draw true Venn diagram, annotate petals and dataset labels"""
-    n_sets = get_n_sets(petal_labels, dataset_labels)
-    if 2 <= n_sets < 6:
-        draw_shape = draw_ellipse
-    elif n_sets == 6:
-        draw_shape = draw_triangle
-    else:
-        raise ValueError("Number of sets must be between 2 and 6")
-    ax = init_axes(ax, figsize)
-    shape_params = zip(
-        SHAPE_COORDS[n_sets], SHAPE_DIMS[n_sets], SHAPE_ANGLES[n_sets], colors
-    )
-    for coords, dims, angle, color in shape_params:
-        draw_shape(ax, *coords, *dims, angle, color)
-    for logic, petal_label in petal_labels.items():
-        # some petals could have been modified manually:
-        if logic in PETAL_LABEL_COORDS[n_sets]:
-            x, y = PETAL_LABEL_COORDS[n_sets][logic]
-            draw_text(ax, x, y, petal_label, fontsize=fontsize, color='white')
-    if legend_loc is not None:
-        ax.legend(dataset_labels, loc=legend_loc, prop={"size": fontsize})
-    return ax
-
-
-def createVennChartMedium(df, types: list, *args, **kwargs):
-    df = df.copy()
-
-    # ----- Collect data for venn -----
-    result = {}
-    for label in types:
-        result[label] = set(df[df[label].apply(lambda x: int(x)>0)==True].index)
-    
-
-    # ----- Settings plt -----
-    fig, ax = plt.subplots(figsize=(7,7))
-    plt.figure(1,1)
-
-    plt.rcParams.update({"text.color": "black",
-    'font.size':16,
-    'font.weight':400})
-
-
-    # ----- Create venn chart -----
-    venn = partial(venn_dispatch, func=draw_venn, hint_hidden=False)
-    venn(result, ax=ax)
-
-    return MatplotlibChart(figure=fig, transparent=True, expand=True)
-
-
 def createChart(df:pd.DataFrame, type : str, types:list = None, *args, **kwargs):
     print(type)
     if type.endswith('Bar'):
@@ -343,7 +201,7 @@ def createChart(df:pd.DataFrame, type : str, types:list = None, *args, **kwargs)
     elif type.endswith('Pie'):
         return createPieChart(df, type[:-3], *args, **kwargs)
     elif type == 'interests':
-        return createVennChart(df, types=types, width=400, height=400, *args, **kwargs)
+        return VennChart(df, types=types, width=400, height=400, *args, **kwargs)
 
 def createChoicesOfDataFrame(df, choice: dict[str, list[int]]) -> pd.DataFrame:
     '''
@@ -364,9 +222,3 @@ def analyze(): # Создаёт датафрейм из CSV
     pd.set_option('display.max.columns', None)
     df = raw_df.fillna(0)
     return df
-
-if __name__ == "__main__":
-    data = analyze()
-    createVennChart(data, types=['1','2'], width=400, height=400)
-    createVennChart(data, types=['1','2', '3'], width=400, height=400)
-    createVennChart(data, types=['1','2', '3', '4'], width=400, height=400)
