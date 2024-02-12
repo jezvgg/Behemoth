@@ -9,8 +9,8 @@ from itertools import combinations
 class VennChart(ft.UserControl):
 
     __graph_data : dict
-    __circles: list[cv.Circle] = []
-    __layers: list[cv.Canvas] = []
+    __circles: list[cv.Circle]
+    __layers: list[cv.Canvas]
 
     width: int
     height: int 
@@ -38,6 +38,9 @@ class VennChart(ft.UserControl):
         center_y = height//2
         radius = min(center_x, center_y)//2
 
+        self.__circles = []
+        self.__layers = []
+
         for degree, color in zip(degrees, self.colors):
             x = center_x + np.cos(degree)*(radius*self._collision)
             y = center_y + np.sin(degree)*(radius*self._collision)
@@ -47,6 +50,7 @@ class VennChart(ft.UserControl):
 
 
     def build(self):
+        print(self.__layers)
         return ft.Stack(controls = self.__layers,
                         width=self.width-self.padding,
                         height=self.height-self.padding,

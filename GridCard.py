@@ -106,6 +106,8 @@ class GridCard(ft.Container):
                 )
             ], expand=True
         )
+        print(self.content.controls[1])
+        print(self.content.controls[1].controls)
         self.page.update()
 
 

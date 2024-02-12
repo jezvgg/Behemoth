@@ -6,8 +6,6 @@ import flet.canvas as cv
 from controls.VennChart import VennChart
 import math
 
-matplotlib.use("svg")
-
 
 
 tips = {'political': ["коммунистические", "социалистические", "умеренные", "либеральные",
@@ -201,7 +199,8 @@ def createChart(df:pd.DataFrame, type : str, types:list = None, *args, **kwargs)
     elif type.endswith('Pie'):
         return createPieChart(df, type[:-3], *args, **kwargs)
     elif type == 'interests':
-        return VennChart(df, types=types, width=400, height=400, *args, **kwargs)
+        chart = VennChart(df, types=types, width=400, height=400, *args, **kwargs)
+        return chart
 
 def createChoicesOfDataFrame(df, choice: dict[str, list[int]]) -> pd.DataFrame:
     '''
