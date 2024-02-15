@@ -52,8 +52,8 @@ class VennChart(ft.UserControl):
             x = center_x + np.cos(degree)*(radius*self._collision)
             y = center_y + np.sin(degree)*(radius*self._collision)
             paint = ft.Paint(color=color, style=ft.PaintingStyle.FILL)
-            self.__circles.append(cv.Circle(x, y, radius, paint=paint))
-            strokes.append(cv.Circle(x, y, radius, paint=self.stroke_paint))
+            self.__circles.append(cv.Circle(x,y,radius,paint=paint))
+            
             self.__layers.append(cv.Canvas(expand=True, shapes=[self.__circles[-1]], opacity=0.6))
 
             # Подпись к кругу
@@ -67,7 +67,6 @@ class VennChart(ft.UserControl):
             x = center_x + np.cos(degree)*(radius*(self._collision+0.25))
             y = center_y + np.sin(degree)*(radius*(self._collision+0.25))
             labels.append(cv.Text(x=x, y=y, text=self.__graph_data[name], style=style, alignment=ft.alignment.center))
-        self.__layers.append(cv.Canvas(expand=True, shapes=strokes))
 
         names = self.__combinations_data(types)
         for degree, name in zip(degrees, names[len(types):-1]):
