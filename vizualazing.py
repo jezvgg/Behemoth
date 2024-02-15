@@ -148,49 +148,7 @@ def createPieChart(df, type, space: bool = True, **kwargs) -> ft.PieChart:
         chart.center_space_radius=40
 
     return chart
-
-
-def createVennChart3(df, types: list, width: int, height: int, *args, **kwargs):
-
-    df = df.copy()
-
-    result = {}
-    for combo in getCombinatiosOfList(types):
-        result['&'.join(combo)] = sum(prod([df[element].apply(lambda x: int(x)>0) for element in combo]))
-
-    center_x = width//2
-    center_y = height//2
-
-    radius = min(width//8, height//8)
-
-    circle1 = cv.Circle(center_x+cos(math.radians(-45))*radius*1.3, center_y+sin(math.radians(-45))*radius*1.3, radius*2, paint=ft.Paint(color=ft.colors.RED, style=ft.PaintingStyle.FILL))
-    circle2 = cv.Circle(center_x+cos(math.radians(-135))*radius*1.3, center_y+sin(math.radians(-135))*radius*1.3, radius*2, paint=ft.Paint(color=ft.colors.BLUE, style=ft.PaintingStyle.FILL))
-    circle3 = cv.Circle(center_x+cos(math.radians(90))*radius*0.8, center_y+sin(math.radians(90))*radius*0.8, radius*2, paint=ft.Paint(color=ft.colors.GREEN, style=ft.PaintingStyle.FILL))
-
-    chart = ft.Stack([
-        cv.Canvas([circle1], expand=True, opacity=0.6),
-        cv.Canvas([circle2], expand=True, opacity=0.6),
-        cv.Canvas([circle3], expand=True, opacity=0.6),
-        cv.Canvas(expand=True, shapes=[
-            cv.Text(center_x+cos(math.radians(-45))*radius*1.3, center_y+sin(math.radians(-45))*radius*1.3-radius*2, types[0], alignment=ft.alignment.bottom_left,style=ft.TextStyle(weight=ft.FontWeight.W_500, color=ft.colors.WHITE, size=20)),
-            cv.Text(center_x+cos(math.radians(-135))*radius*1.3, center_y+sin(math.radians(-135))*radius*1.3-radius*2, types[1], alignment=ft.alignment.bottom_right, style=ft.TextStyle(weight=ft.FontWeight.W_500, color=ft.colors.WHITE, size=20)),
-            cv.Text(center_x+cos(math.radians(90))*radius*0.8, center_y+sin(math.radians(90))*radius*0.8+radius*2, types[2], alignment=ft.alignment.top_center, style=ft.TextStyle(weight=ft.FontWeight.W_500, color=ft.colors.WHITE, size=20)),
-            cv.Text(center_x, center_y, result[f'{types[0]}&{types[1]}&{types[2]}'], alignment=ft.alignment.center, style=ft.TextStyle(size=16, color=ft.colors.WHITE)),
-            cv.Text(center_x+cos(math.radians(-45))*radius*2.5, center_y+sin(math.radians(-45))*radius*2.5, result[types[0]], alignment=ft.alignment.center, style=ft.TextStyle(size=16, color=ft.colors.WHITE)),
-            cv.Text(center_x+cos(math.radians(-135))*radius*2.5, center_y+sin(math.radians(-135))*radius*2.5, result[types[1]], alignment=ft.alignment.center, style=ft.TextStyle(size=16, color=ft.colors.WHITE)),
-            cv.Text(center_x+cos(math.radians(90))*radius*2, center_y+sin(math.radians(90))*radius*2, result[types[2]], alignment=ft.alignment.center, style=ft.TextStyle(size=16, color=ft.colors.WHITE)),
-            cv.Text(center_x+cos(math.radians(45))*radius*1.6, center_y+sin(math.radians(45))*radius*0.7, result[types[0]], alignment=ft.alignment.center, style=ft.TextStyle(size=16, color=ft.colors.WHITE)),
-            cv.Text(center_x+cos(math.radians(135))*radius*1.6, center_y+sin(math.radians(135))*radius*0.7, result[types[1]], alignment=ft.alignment.center, style=ft.TextStyle(size=16, color=ft.colors.WHITE)),
-            cv.Text(center_x+cos(math.radians(-90))*radius*1.4, center_y+sin(math.radians(-90))*radius*1.4, result[types[2]], alignment=ft.alignment.center, style=ft.TextStyle(size=16, color=ft.colors.WHITE))
-            ])
-    ],
-    right=0,
-    width=width-15,
-    height=height-15)
-    ft.Alignment
-
-    return chart
-
+    
 
 def createChart(df:pd.DataFrame, type : str, types:list = None, *args, **kwargs):
     print(type)
