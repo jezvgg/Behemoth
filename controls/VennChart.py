@@ -3,7 +3,6 @@ import numpy as np
 import pandas as pd
 from math import prod
 import flet.canvas as cv
-from flet_core.canvas.shape import Shape
 from itertools import combinations
 from controls.VennCircle import VennCircle
 
@@ -12,7 +11,7 @@ from controls.VennCircle import VennCircle
 class VennChart(ft.UserControl):
 
     __graph_data : dict
-    __circles: list[cv.Circle]
+    __circles: list[VennCircle]
     __layers: list[cv.Canvas]
 
     width: int
@@ -62,7 +61,7 @@ class VennChart(ft.UserControl):
             text = cv.Text(x=text_x, y=text_y, text=name, alignment=start_draw, style=style)
 
             self.__circles.append(VennCircle(x=x, y=y, radius=radius, text=text, fill_color=paint))
-            self.__layers.append(cv.Canvas(expand=True, shapes=[self.__circles[-1].inner], opacity=0.65))
+            self.__layers.append(self.__circles[-1].inner)
             labels += [self.__circles[-1].outer, self.__circles[-1].text]
 
             # Подписываем размер круга
@@ -83,10 +82,30 @@ class VennChart(ft.UserControl):
 
 
     def build(self):
-        return ft.Stack(controls = self.__layers,
-                        width=self.width-self.padding,
-                        height=self.height-self.padding,
-                        right=-(self.padding//2))
+        return ft.Stack(controls = 
+        [ft.GestureDetector(expand=True, on_hover=self.__on_hover)]+self.__layers,
+                    width=self.width-self.padding,
+                    height=self.height-self.padding,
+                    right=-(self.padding//2))
+
+
+    def __on_hover(self, e: ft.HoverEvent):
+        for circle in self.__circles:
+            if (e.local_x-circle.x)**2 + (e.local_y-circle.y)**2 <= circle.radius**2 and circle.event == False:
+                self.on_hover(circle)
+                circle.event = True
+            elif circle.event == True and (e.local_x-circle.x)**2 + (e.local_y-circle.y)**2 > circle.radius**2:
+                circle.event = False
+                circle.to_default()
+                circle.update()
+            
+
+
+    def on_hover(self, circle: VennCircle):
+        circle.opacity = 1
+        circle.text.style.size = 18
+        circle.update()
+        self.update()
 
 
     def __filter_data(self, data: pd.DataFrame, types: list):
