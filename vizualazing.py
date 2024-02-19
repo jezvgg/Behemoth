@@ -1,7 +1,7 @@
 import pandas as pd
 import flet as ft
-from controls.VennChart import VennChart
-from controls.BarChart import BarChart
+from controls.Charts.VennChart import VennChart
+from controls.Charts.BarChart import BarChart
 
 
 

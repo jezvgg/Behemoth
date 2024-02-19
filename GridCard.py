@@ -1,7 +1,7 @@
 import flet as  ft
 from settings.settings_class import Settings
 from settings.inputs import inputs
-from vizualazing import createChart, createChoicesOfDataFrame
+from controls.Charts import BarChart, VennChart, PieChart
 
 
 class GridCard(ft.Container):
@@ -93,7 +93,7 @@ class GridCard(ft.Container):
         self.content = ft.Stack(
             controls = [
                 ft.Row([ft.Text(name, size=16)], top=11, left=30),
-                createChart(df=createChoicesOfDataFrame(self.page.analyze, self.types), 
+                self.__create_chart(df=self.__filter_data(self.page.analyze, self.types), 
                             type=key, 
                             types=self.interests),
                 ft.IconButton(
@@ -137,3 +137,26 @@ class GridCard(ft.Container):
         self.settings.content.content.content.controls[-1].controls.append(
             ft.Text(self.settings.content.content.content.controls[-2].value))
         self.page.update()
+
+
+    def __filter_data(self, df, choice: dict[str, list[int]]):
+        '''
+        Оставляет в датафреме только нужные строки, переделал
+        '''
+        filter = []
+        for key in choice.keys():
+            for value in choice[key]:
+                filter.append(f"(df['{key}']!={value})")
+        if filter:
+            return df[eval("&".join(filter))]
+        return df
+
+
+    def __create_chart(self, df, type : str, types:list = None, *args, **kwargs):
+        print(type)
+        if type.endswith('Bar'):
+            return BarChart(df, type[:-3], *args, **kwargs)
+        elif type.endswith('Pie'):
+            return PieChart(df, type[:-3], *args, **kwargs)
+        elif type == 'interests':
+            return VennChart(df, types=types, width=400, height=400, *args, **kwargs)

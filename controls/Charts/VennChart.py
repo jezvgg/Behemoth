@@ -4,7 +4,7 @@ import pandas as pd
 from math import prod
 import flet.canvas as cv
 from itertools import combinations
-from controls.VennCircle import VennCircle
+from controls.Charts.VennCircle import VennCircle
 
 
 
