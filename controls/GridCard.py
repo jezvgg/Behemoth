@@ -153,7 +153,6 @@ class GridCard(ft.Container):
 
 
     def __create_chart(self, df, type : str, types:list = None, *args, **kwargs):
-        print(type)
         if type.endswith('Bar'):
             return BarChart(df, type[:-3], *args, **kwargs)
         elif type.endswith('Pie'):

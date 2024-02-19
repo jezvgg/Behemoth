@@ -1,6 +1,6 @@
 import flet as ft
-from vizualazing import analyze
-from GridCard import GridCard
+import pandas as pd
+from controls.GridCard import GridCard
 
 
 MAIN_COLOR = "#3366CC"
@@ -20,7 +20,10 @@ def main(page: ft.Page):
     page.appbar = header
     page.update()
 
-    data = analyze()
+    filename = 'content.csv'
+    raw_df = pd.read_csv(filename)
+    data = raw_df.fillna(0)
+
     page.analyze = data
     
     content = ft.Container(
