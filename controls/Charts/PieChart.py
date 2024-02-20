@@ -7,8 +7,9 @@ class PieChart(ft.UserControl):
     x: int
     y: int
 
-    __normal_radius = 105
-    __hover_radius = 110
+    __normal_radius = 60
+    __hover_radius = 65
+    __center_space_radius = 40
     __normal_title_style = ft.TextStyle(
         size=16, color=ft.colors.WHITE, weight=ft.FontWeight.BOLD
     )
@@ -52,13 +53,9 @@ class PieChart(ft.UserControl):
         self.y = [value/(sum(axis.values())/100) for value in axis.values()]
         self.__create_chart()
 
-        self.chart.center_space_radius = 0
-        self.__hover_radius = 110
-        self.__normal_radius = 105
-        if space:
-            self.__normal_radius -= 40
-            self.__hover_radius -= 40
-            self.chart.center_space_radius=40
+        self.__hover_radius = 65
+        self.__normal_radius = 60
+        self.chart.__center_space_radius=40
 
 
     def build(self):
@@ -81,4 +78,5 @@ class PieChart(ft.UserControl):
             sections=[ft.PieChartSection(value[1], title=f"{value[0]}\n{int(value[1])}" if value[1]>10 else "", color=self.__colors[i%9], 
             radius=self.__normal_radius, title_style=self.__normal_title_style) for i,value in enumerate(zip(self.x, self.y))],
             sections_space=1,
-            on_chart_event=self.hover)
+            on_chart_event=self.hover,
+            center_space_radius=self.__center_space_radius)

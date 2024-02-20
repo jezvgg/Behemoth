@@ -129,7 +129,7 @@ class GridCard(ft.Container):
                                 ft.ListView(controls=[], height=60)]
                 self.settings.content.content.content.controls[-2].options = [ft.dropdown.Option(opt) for opt in self.page.analyze.columns[10:]]
                 self.settings.content.content.content.controls[-2].on_change = self.add_interest
-                self.page.update()
+        self.page.update()
 
 
     def add_interest(self, e):
