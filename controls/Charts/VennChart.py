@@ -104,6 +104,7 @@ class VennChart(ft.UserControl):
     def on_hover(self, circle: VennCircle):
         circle.opacity = 1
         circle.text.style.size = 18
+        circle.text.style.shadow = ft.BoxShadow(blur_radius=2, color=ft.colors.BLACK54)
         circle.update()
         self.update()
 

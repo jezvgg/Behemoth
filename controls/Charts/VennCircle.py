@@ -37,7 +37,8 @@ class VennCircle:
         self.event = False
         self.to_default()
 
-        self.__inner_circle = cv.Canvas(expand=True, shapes=[cv.Circle(x=self.x, y=self.y, radius=self.radius, paint=self.fill_color)], opacity=self.opacity)
+        self.__inner_circle = cv.Canvas(expand=True, opacity=self.opacity, animate_opacity=200,
+                                        shapes=[cv.Circle(x=self.x, y=self.y, radius=self.radius, paint=self.fill_color)])
         self.__outer_circle = cv.Circle(x=self.x, y=self.y, radius=self.radius, paint=self.stroke_color)
 
 
