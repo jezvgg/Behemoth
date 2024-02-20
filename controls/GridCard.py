@@ -13,17 +13,30 @@ class GridCard(ft.Container):
     page = None
     interests: list = []
 
+    __pos = (0,0)
+    __size = (1,1)
+    
+    index = 0
 
-    def __init__(self, page: ft.Page, *args, **kwargs):
+
+    def __init__(self, page: ft.Page, 
+                width: int = 400,
+                height: int = 400,
+                size: tuple = (1,1),
+                pos = None,
+                *args, **kwargs):
+
         super().__init__(
-            width=400,
-            height=400,
+            width=width,
+            height=height,
             border=ft.border.all(2, "#1A202A"),
             border_radius=20,
             padding=20,
             *args, **kwargs)
 
         self.page = page
+        self.__pos = pos
+        self.__size = size
 
         self.political_settings = Settings(
             page=page,

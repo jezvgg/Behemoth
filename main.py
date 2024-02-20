@@ -1,6 +1,7 @@
 import flet as ft
 import pandas as pd
 from controls.GridCard import GridCard
+from controls.FlexGrid import FlexGrid
 
 
 MAIN_COLOR = "#3366CC"
@@ -26,12 +27,17 @@ def main(page: ft.Page):
 
     page.analyze = data
     
-    content = ft.Container(
-                content=ft.Row(
-                            controls = [GridCard(page), GridCard(page)]
-                            )
-                )
-    page.add(content)
+    # content = ft.Container(
+    #             content=ft.Row(
+    #                         controls = [GridCard(page), GridCard(page)]
+    #                         )
+    #             )
+    # page.add(content)
+    grid = FlexGrid(page=page, card_height=400, card_width=400, fwidth=page.window_width, fheight=page.window_height, expand=True)
+    # page.add(GridCard(page=page))
+    grid.add(GridCard(page=page), (1,1))
+    grid.add(GridCard(page=page), (1,2))
+    page.update()
 
 
 if __name__ == "__main__":
