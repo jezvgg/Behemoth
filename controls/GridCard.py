@@ -24,6 +24,7 @@ class GridCard(ft.Container):
                 height: int = 400,
                 size: tuple = (1,1),
                 pos = None,
+                index = 0,
                 *args, **kwargs):
 
         super().__init__(
@@ -37,6 +38,7 @@ class GridCard(ft.Container):
         self.page = page
         self.__pos = pos
         self.__size = size
+        self.index = index
 
         self.political_settings = Settings(
             page=page,

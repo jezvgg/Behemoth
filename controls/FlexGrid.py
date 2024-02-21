@@ -46,15 +46,36 @@ class FlexGrid:
 
         self.__index = 0
         self.page.add(self.content)
+        self.append()
+
+
+    def append(self, e=None):
+        card = GridCard(self.page, self.card_width, self.card_height)
+
+        pos_x = int(self.__index%self.size[0])+1
+        pos_y = int(self.__index//self.size[0])+1
+        pos = (pos_x, pos_y)
+
+        card.content.on_click = self.append
+        self.page.update()
+        
+        if not (pos[0] > self.size[0] or pos[1] > self.size[1]):
+            self.add(card, pos)
+        else:
+            self.__index += 1
+
+        if self.__index > 1:
+            list(filter(lambda x: x.index == self.__index-1 , self.content.controls))[0].create_card(e)
 
 
     def add(self, value: GridCard, pos: tuple):
         self.__index += 1
         value.index = self.__index
-        self.grid[pos[0]-1][pos[1]-1] = value.index
+        print([pos[0]-1],[pos[1]-1])
+        self.grid[pos[1]-1][pos[0]-1] = value.index
 
-        x = (pos[1]-1)*self.card_width + (pos[1]-1)*15
-        y = (pos[0]-1)*self.card_width + (pos[0]-1)*15
+        x = (pos[0]-1)*self.card_width + (pos[0]-1)*15
+        y = (pos[1]-1)*self.card_width + (pos[1]-1)*15
 
         value.left = x
         value.top = y

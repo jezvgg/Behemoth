@@ -35,8 +35,8 @@ def main(page: ft.Page):
     # page.add(content)
     grid = FlexGrid(page=page, card_height=400, card_width=400, fwidth=page.window_width, fheight=page.window_height, expand=True)
     # page.add(GridCard(page=page))
-    grid.add(GridCard(page=page), (1,1))
-    grid.add(GridCard(page=page), (1,2))
+    # grid.add(GridCard(page=page), (1,1))
+    # grid.add(GridCard(page=page), (1,2))
     page.update()
 
 
