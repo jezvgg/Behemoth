@@ -1,7 +1,8 @@
 import flet as  ft
-from settings.settings_class import Settings
-from settings.inputs import inputs
+from controls.settings.settings_class import Settings
+from controls.settings.inputs import inputs
 from controls.Charts import BarChart, VennChart, PieChart
+from time import sleep
 
 
 class GridCard(ft.Container):
@@ -33,6 +34,7 @@ class GridCard(ft.Container):
             border=ft.border.all(2, "#1A202A"),
             border_radius=20,
             padding=20,
+            animate_position=200,
             *args, **kwargs)
 
         self.page = page
@@ -104,6 +106,8 @@ class GridCard(ft.Container):
 
         key = self.settings.content.content.content.controls[0].value
         name = list(filter(lambda x: x.key == key, self.settings.content.content.content.controls[0].options))[0].text
+
+        #sleep(0.2)
 
         self.content = ft.Stack(
             controls = [

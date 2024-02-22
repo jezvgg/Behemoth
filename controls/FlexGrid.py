@@ -15,6 +15,7 @@ class FlexGrid:
     content: ft.Stack
 
     __index: int
+    __next_pos: tuple
 
     def __init__(self, page: ft.Page, card_width: int, card_height: int,
                 fwidth: int = 0, fheight: int = 0, size = (), expand: bool = False,
@@ -68,9 +69,28 @@ class FlexGrid:
             list(filter(lambda x: x.index == self.__index-1 , self.content.controls))[0].create_card(e)
 
 
+    def delete(self, index: int, e):
+        if e:
+            self.content.controls[index-1].settings.close()
+        self.content.controls.pop(index-1)
+
+        for card in list(filter(lambda x: x.index > index, self.content.controls)):
+            card.index -= 1
+            pos_x = int(card.index%self.size[0])
+            pos_y = int((card.index-1)/self.size[0])+1
+            x = (pos_x-1)*self.card_width + (pos_x-1)*15
+            y = (pos_y-1)*self.card_width + (pos_y-1)*15
+            card.left = x
+            card.top = y
+
+        self.__index -= 1
+        self.page.update()
+
+
     def add(self, value: GridCard, pos: tuple):
         self.__index += 1
         value.index = self.__index
+        value.settings.content.actions.append(ft.TextButton("Delete", on_click=lambda x: self.delete(value.index, x)))
         print([pos[0]-1],[pos[1]-1])
         self.grid[pos[1]-1][pos[0]-1] = value.index
 

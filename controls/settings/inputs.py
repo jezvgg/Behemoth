@@ -13,7 +13,7 @@ class Inputs:
     inputs = None
 
 
-    def __init__(self, json_path: Path = Path(Path.cwd(), 'settings/inputs.json')):
+    def __init__(self, json_path: Path = Path(Path.cwd(), 'controls/settings/inputs.json')):
         with open(json_path, 'r') as f:
             json_file = f.read()
         self.inputs = json.loads(json_file)
